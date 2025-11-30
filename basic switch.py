@@ -822,8 +822,9 @@ while menu_input != '0':
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 1.0
+version: 1.2
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
+
 '''
