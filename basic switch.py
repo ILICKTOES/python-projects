@@ -32,13 +32,13 @@ def menu():
 def clock():
     hr = input('clock hour: ')
     mn = input('clock minutes: ')
-    sc = input('clock seconds: ')
     dy = input('clock day #: ')
     mon = input('clock month: ').capitalize()
     yr = input('clock year: ')
-    print(f'Setting clock to {hr}:{mn}:{sc} {dy} {mon} {yr}\n')
-    wait = "waitln '>'"
-    clock_complete = f"sendln 'do clock set {hr}:{mn}:{sc} {dy} {mon} {yr}'"  
+    print(f'Setting clock to {hr}:{mn}:00 {dy} {mon} {yr}\n')
+    wait = "waitln 'switch>'"
+    
+    clock_complete = f"sendln 'do clock set {hr}:{mn}:00 {dy} {mon} {yr}'"  
     with open('tempstart.ttl', 'at') as tempclock:
         tempclock.write(f'{wait}\n')
         tempclock.write(f'{clock_complete}\n')
@@ -46,7 +46,7 @@ def clock():
         return
 
 def s_cisco():
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     hostname = input('hostname: ')
     password = input('enable secret password: ')
     hostname_command = f"sendln 'hostname {hostname}'"
@@ -68,7 +68,7 @@ def line_con():
     login = "sendln 'login'"
     logging_sync = "sendln 'logging synchronous'"
     passw_c = f"sendln 'password {password}'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvty_password:
@@ -94,7 +94,7 @@ def vty_line():
     login = "sendln 'login'"
     logging_sync = "sendln 'logging synchronous'"
     passw_v = f"sendln 'password {password}'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvty_password:
@@ -120,7 +120,7 @@ def a_vlans():
     port_ports = f"sendln 'interface range {ports}'"
     access = "sendln 'switchport mode access'"
     assign = f"sendln 'switchport access {vname}'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempassign_ports_vlan:
@@ -141,7 +141,7 @@ def a_vlans():
 def c_vlans():
     cvlans = True
     while cvlans == True:
-        wait = "waitln '>'"
+        wait = "waitln 'switch>'"
         configt = "sendln 'configure terminal'"
         end = "sendln 'end'"
         vlancr = input('do you want to create vlan? Y/N: ')
@@ -174,7 +174,7 @@ def c_vlans():
 def ip_gateway():
     ip_add = input('ip default-gateway: ')
     default_gateway = f"sendln 'ip default-gateway {ip_add}'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempdefault_gateway:
@@ -195,7 +195,7 @@ def vlan_ip():
     interface_vlan = f"sendln 'int vlan {vname}'"
     assign_ip = f"sendln 'ip address {ip_add} {sub_net}'"
     no_shutdown = "sendln 'no shutdown'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvlan_ip:
@@ -214,7 +214,7 @@ def vlan_ip():
         return
 
 def trunking_m():
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     allowedp = input('allowed vlans seperate with comma do not MISSTYPE!!!: ') 
     native = input('native vlan: ')
     ports = input('enter range or port to trunk: ')
@@ -251,7 +251,7 @@ def etherchannel():
     on_enable = "on, or enable=Etherchannel only\n"
     passive_LACP = "passive=LACP if another LACP device is connected\n"
     exit_ = "sendln 'exit'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     mode = input(f'{active_LACP}{auto_PAgP}{desireable_PAgP}{on_enable}{passive_LACP}enter etherchannel mode: ')
@@ -295,7 +295,7 @@ def port_sec():
     security = True
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     security_mode = input('enter mode or EXIT > manual, sticky, dynamic or shutdown & violation-aging: ')    
     while security == True:
         if security_mode == 'manual' or security_mode == 'Manual':
@@ -463,7 +463,7 @@ def port_sec():
                 
 
 def mitigate_dhcp_attacks_and_arp():
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     enable_snooping = "sendln 'ip dhcp snooping'"
     ports_router = input('enter port for router/dhcp server: ')
     ports_trusted = input('enter trusted ports for dhcp snooping: ')
@@ -515,7 +515,7 @@ def mitigate_dhcp_attacks_and_arp():
 def stp_():    
     ports = input('enter range or port for spanning tree: ')
     mode = input('enter rapid-pvst, pvst or stp: ')
-    wait = "waitln '>'"
+    wait = "waitln 'switch>'"
     port_mode = f"sendln 'spanning-tree mode {mode}'"
     port_ports = f"sendln 'int range {ports}'"
     configt = "sendln 'configure terminal'"
@@ -542,8 +542,8 @@ def stp_():
 def start_():
     connect = "connect '/C=3'"
     setsync = "setsync 1"
-    waite = f"waitln '{hostname}#'"
-    wait = "waitln '>'"
+    waite = "waitln 'switch#'"
+    wait = "waitln 'switch>'"
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
     configp = f"waitln '{hostname}(config)#"
@@ -551,40 +551,44 @@ def start_():
         tempstart.write(f'{setsync}\n')
         tempstart.write(f'{wait}\n')
         tempstart.write(f'{connect}\n')
-        tempstart.write(f'{wait}\n')
         tempstart.write(f'{enable}\n')
         tempstart.write(f'{waite}\n')
         tempstart.write(f'{configt}\n')
         tempstart.write(f'{configp}\n')
+        tempstart.write(f'{wait}\n')
         tempstart.flush()
         return
 
-def finish_():
-    global hostname
+def finish_(hostname):
     name_of_file = input('enter name for log file without .log: ')
     Desktop = Path.home() / "Desktop"
     log_file = Desktop / f"{name_of_file}.log"
     start_logging = f"logopen '{str(log_file)}'"
     stop_logging = "logclose"
+    carriage_return = "sendln ''"
     configp = f"waitln '{hostname}(config)#"
     save = "sendln 'do copy running-config startup-config'"
+    save_prompt = "waitln 'Destination filename [startup-config]?'"
     show = "sendln 'do show start'"
-    terminal_length = "sendln 'terminal length 0'"
+    terminal_length = "sendln 'do terminal length 0'"
     with open('tempfinish.ttl', 'w+') as tempfinish:
+        tempfinish.write(f'{configp}\n')
         tempfinish.write(f'{terminal_length}\n')
         tempfinish.write(f'{configp}\n')
         tempfinish.write(f'{save}\n')
+        tempfinish.write(f'{save_prompt}\n')
+        tempfinish.write(f'{carriage_return}\n')
         tempfinish.write(f'{configp}\n')
         tempfinish.write(f'{start_logging}\n')
         tempfinish.write(f'{show}\n')
         tempfinish.write(f'{configp}\n')
         tempfinish.write(f'{stop_logging}\n')
+        tempfinish.write(f'{configp}\n')
         tempfinish.flush()
         return
         
 
-def delete_save():
-    global hostname
+def delete_save(hostname):
     starting_prompt = f"waitln 'Press RETURN to get started!'"
     waite = f"waitln '{hostname}#'"
     wait = f"waitln '{hostname}>'"
@@ -599,18 +603,17 @@ def delete_save():
     delete_startup = "sendln 'do erase startup-config'"
     delet_startup_prompt = "waitln 'Erasing the nvram filesystem will remove all configuration files! Continue? [confirm]'"
     delete_vlan_dat = "sendln 'do delete flash:/vlan.dat'"
-    reload = "sendln 'do reload in 0'"
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
     configp = f"waitln '{hostname}(config)#"
     vlan_dat_delete_prompt = "waitln 'Delete filename [vlan.dat]?'"
     vlan_dat_delete_prompt_confirm = "waitln '[confirm]'"
+    reload_ = "sendln 'do reload in 0'"
     reload_prompt = "waitln 'Proceed with reload? [confirm]'"
     reload_confirm = "waitln 'Would you like to save the current configuration? [yes/no]:'"
     reload_confirm_no = "sendln 'no'"
     with open('tempdelete.ttl', 'w+') as tempdelete:
         tempdelete.write(f'{setsync}\n')
-        tempdelete.write(f'{wait}\n')
         tempdelete.write(f'{connect}\n')
         tempdelete.write(f'{starting_prompt}\n')
         tempdelete.write(f'{carriage_return}\n')
@@ -633,7 +636,7 @@ def delete_save():
         tempdelete.write(f'{vlan_dat_delete_prompt_confirm}\n')
         tempdelete.write(f'{carriage_return}\n')        
         tempdelete.write(f'{configp}\n')
-        tempdelete.write(f'{reload}\n')
+        tempdelete.write(f'{reload_}\n')
         tempdelete.write(f'{reload_prompt}\n')
         tempdelete.write(f'{carriage_return}\n')
         tempdelete.write(f'{reload_confirm}\n')
@@ -642,11 +645,7 @@ def delete_save():
         return 
     
 
-def ParkingLot_Blackhole():
-    global hostname                
-    global port_result1
-    global port_result2
-    global port_result3
+def ParkingLot_Blackhole(port_result1, port_result2, port_result3, hostname):
     print(f'vlan ports: {port_result1}')
     print(f'etherchannel & trunking ports: {port_result2}')
     print(f'stp enabled ports: {port_result3}')
@@ -687,10 +686,11 @@ includes an exit and "mysterious values" or "unknown" check at the bottom of the
 
 while menu_input != '0':
     start_()
-    port_result1 = ''
-    port_result2 = ''
-    port_result3 = ''
-    Blackhole_ports = ''
+    hostname = 'Switch'
+    port_result1 = 'none'
+    port_result2 = 'none'
+    port_result3 = 'none'
+    Blackhole_ports = 'none'
         
     if menu_input == '1':
         clock()
@@ -750,7 +750,8 @@ while menu_input != '0':
         menu_input = input("Please enter a number or EXIT: ")
 
     elif menu_input == '12':
-        Blackhole_ports = ParkingLot_Blackhole()
+        Blackhole_ports = ParkingLot_Blackhole(f'{port_result1}', 
+        f'{port_result2}', f'{port_result3}',f'{hostname}')
         menu()
         menu_input = input("Please enter a number or EXIT: ")
         
@@ -773,13 +774,13 @@ while menu_input != '0':
         menu_input = input("Please enter a number or EXIT: ")
 
     elif menu_input == '16':
-        finish_()
+        finish_(f'{hostname}')
         os.remove('tempstart.ttl')
         menu()
         menu_input = input("Please enter a number or EXIT: ")
         
     elif menu_input == '17':
-        delete_save()
+        delete_save(f'{hostname}')
         os.remove('tempfinish.ttl')
         menu()
         menu_input = input("Please enter a number or EXIT: ")
@@ -796,7 +797,7 @@ while menu_input != '0':
         menu_input = input("Please enter a number or EXIT: ")
 
 
-  def menu():
+def menu():
     print("-----------------------\n")
     print("1."+"Set clock\n")
     print("2."+"Hostname & EXEC password\n")
@@ -809,7 +810,7 @@ while menu_input != '0':
     print("9."+"Manual trunking\n")
     print("10."+"Etherchannel & Trunking\n")
     print("11."+"STP & PVST config\n")
-    print("
+    print(d
     print("13."+"port security & Violation\n")
     print("14."+"dhcp snooping & arp inspection\n")
     print("15."+"show configured ports\n")
