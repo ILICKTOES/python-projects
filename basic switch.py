@@ -776,8 +776,15 @@ while program_running is True:
     clear_screen()
     menu_input = menu()
     while menu_input == '1':
-        start_(hostname)
-        break 
+        try:
+            os.remove('tempdelete.ttl')
+            start_(hostname)
+
+        except FileNotFoundError:
+            start_(hostname)
+
+        finally:
+            break 
     
     while menu_input == '2':
         if tempstart == 'y':
@@ -927,28 +934,24 @@ while program_running is True:
             delete_save(hostname)
             os.remove('tempfinish.ttl')
             os.remove('tempstart.ttl')
-            break
-        
+            
         except FileNotFoundError:
             delete_save(hostname)    
+
+        finally:
             break    
     
     if menu_input == 'EXIT' or menu_input == 'exit':
-        try:
-            print("Goodbye!!!?")
-            os.remove('tempdelete.ttl')
-            break
+        print("Goodbye!!!?")
+        break
         
-        except FileNotFoundError:
-            break    
-    
     else:
         continue                
                         
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 3.3
+version: 3.4
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
