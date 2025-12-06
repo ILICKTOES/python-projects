@@ -7,6 +7,8 @@ CTN - computer techinician script
 '''
 from pathlib import Path
 import os
+import sys
+
 def menu():
     print("-Macro-Maker-----------\n")
     print("1."+"Hostname & EXEC password\n")
@@ -28,7 +30,7 @@ def menu():
     print("17."+"delete startup-config & reload\n")
     print("Type EXIT to quit\n")
     print("-----------------------\n")
-    selection = input('select option')
+    selection = input('select option: ')
     return selection
 
 def clock(hostname):
@@ -147,8 +149,8 @@ def c_vlans(hostname):
     waite = f"waitln '{hostname}#'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
-    vname = input('name for vlan ex. guests: ')
     vnum = input('vlan number: ')
+    vname = input('name for vlan ex. guests: ')
     vlan_create = f"sendln 'vlan {vnum}'"
     vlan_name = f"sendln 'name {vname}'"
     with open('tempstart.ttl', 'at') as tempcreate_vlan:
@@ -718,7 +720,7 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
     park_ports = input('enter ports for Parking_Lot: ')
     port_ports = f"sendln 'int range {park_ports}'"
     access = "sendln 'switchport mode access'"
-    access_vlan = f"sendln 'switchport access {blackhole}'"
+    access_vlan = f"sendln 'switchport access vlan {blackhole}'"
     end = "sendln 'end'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
@@ -763,8 +765,10 @@ each 'elif' is checking for specific input value to call respective functions
 includes an exit and "mysterious values" or "unknown" check at the bottom of the loop 
 '''
 print('use start. to initialize Macro file.')
+print('if file already exists, do not use start. and it will add to the file with a correct hostname.')
 print('finish and delete are seperate files, and can be chosen after macro is set.')
 pause = input('press return: ')
+clear_screen()
 hostname = input('enter machines hostname: ')
 program_running = True
 while program_running is True:    
@@ -880,36 +884,59 @@ while program_running is True:
             break
 
     while menu_input == '15':
-        print(f'vlan ports: {port_result1}')
-        print(f'etherchannel & trunking ports: {port_result2}')
-        print(f'stp enabled ports: {port_result3}')
-        print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
-        print(f'hostname: {hostname}')
-        pause = input('press ENTER to continue...')
-        break
+        if port_result1 != None:
+            print(f'vlan ports: {port_result1}')
+        
+        elif port_result2 != None:    
+            print(f'etherchannel & trunking ports: {port_result2}')
+        
+        elif port_result3 != None:    
+            print(f'stp enabled ports: {port_result3}')
+        
+        elif Blackhole_ports != None:
+            print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
 
+        elif hostname != None:    
+            print(f'hostname: {hostname}')
+            pause = input('press ENTER to continue...')
+            break
+        
+        else:
+            continue
+        
     while menu_input == '16':
         finish_(hostname)
         break
         
     while menu_input == '17':
-        delete_save(hostname)
-        os.remove('tempfinish.ttl')
-        os.remove('tempstart.ttl')
-        break
-
+        try:
+            delete_save(hostname)
+            os.remove('tempfinish.ttl')
+            os.remove('tempstart.ttl')
+            break
+        
+        except FileNotFoundError:
+            delete_save(hostname)    
+            break    
+    
     if menu_input == 'EXIT' or menu_input == 'exit':
-        print("Goodbye!!!?")
-        os.remove('tempdelete.ttl')
-        continue
-
+        try:
+            print("Goodbye!!!?")
+            os.remove('tempdelete.ttl')
+            sys.exit()
+            break
+        
+        except FileNotFoundError:
+            sys.exit()
+            break    
+    
     else:
         continue                
                         
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 2.0
+version: 3.0
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
