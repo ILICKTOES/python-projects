@@ -744,9 +744,13 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
         input('press enter to continue: ')
         return park_ports
 
+
+
 def clear_screen():
     os.system('cls')
     return
+
+
 
 def filecheck():
     try:
@@ -931,9 +935,9 @@ while program_running is True:
         
     while menu_input == '17':
         try:
-            delete_save(hostname)
-            os.remove('tempfinish.ttl')
             os.remove('tempstart.ttl')
+            os.remove('tempfinish.ttl')
+            delete_save(hostname)
             
         except FileNotFoundError:
             delete_save(hostname)    
@@ -951,7 +955,7 @@ while program_running is True:
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 3.4
+version: 3.5f
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
