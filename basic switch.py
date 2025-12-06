@@ -9,9 +9,9 @@ from pathlib import Path
 import os
 def menu():
     print("-Macro-Maker-----------\n")
-    print("1."+"Set clock\n")
-    print("2."+"Hostname & EXEC password\n")
-    print("3."+"Console line config")
+    print("1."+"Hostname & EXEC password\n")
+    print("2."+"Set clock\n")
+    print("3."+"Console line config\n")
     print("4."+"VTY line config\n")
     print("5."+"Create vlans\n")
     print("6."+"Assign ports to vlans\n")
@@ -46,6 +46,8 @@ def clock(hostname):
         tempclock.write(f'{configp}\n')
         tempclock.flush()
         tempclock.close()
+        print('clock finished!')
+        input('press enter to continue: ')
         return
 
 def line_con(hostname):
@@ -75,6 +77,8 @@ def line_con(hostname):
         tempvty_password.write(f'{configp}\n')
         tempvty_password.flush()
         tempvty_password.close()
+        print('line con done!')
+        input('press enter to continue: ')
         return
 
 def vty_line(hostname):            
@@ -104,6 +108,8 @@ def vty_line(hostname):
         tempvty_password.write(f'{configp}\n')
         tempvty_password.flush()
         tempvty_password.close()
+        print('vty-lines done!')
+        input('press enter to continue: ')
         return
 
 def a_vlans(hostname):
@@ -131,8 +137,10 @@ def a_vlans(hostname):
         tempassign_ports_vlan.write(f'{configp}\n')
         tempassign_ports_vlan.flush()
         tempassign_ports_vlan.close()
+        print('assigned ports to vlans!')
+        input('press enter to continue: ')
         return ports
-
+        
 def c_vlans(hostname):
     waitv = f"waitln '{hostname}(config-vlan)#'"
     configp = f"waitln '{hostname}(config)#'"
@@ -155,8 +163,10 @@ def c_vlans(hostname):
         tempcreate_vlan.write(f'{configp}\n')
         tempcreate_vlan.flush()
         tempcreate_vlan.close()
+        print('vlan created!')
+        input('press enter to continue: ')
         return
-
+        
 def ip_gateway(hostname):
     configp = f"waitln '{hostname}(config)#'"
     waite = f"waitln '{hostname}#'"
@@ -174,6 +184,8 @@ def ip_gateway(hostname):
         tempdefault_gateway.write(f'{configp}\n')
         tempdefault_gateway.flush()
         tempdefault_gateway.close()
+        print('default-gateway done!')
+        input('press enter to continue: ')
         return
 
 def vlan_ip(hostname):
@@ -202,6 +214,8 @@ def vlan_ip(hostname):
         tempvlan_ip.write(f'{configp}\n')
         tempvlan_ip.flush()
         tempvlan_ip.close()
+        print('vlan ip done!')
+        input('press enter to continue: ')
         return
 
 def trunking_m(hostname):
@@ -236,6 +250,8 @@ def trunking_m(hostname):
         tempmanual_trunking.write(f'{configp}\n')
         tempmanual_trunking.flush()
         tempmanual_trunking.close()
+        print('manual trunking done!')
+        input('press enter to continue: ')
         return ports
 
 def etherchannel(hostname):
@@ -286,6 +302,8 @@ def etherchannel(hostname):
         tempetherchannel.write(f'{configp}\n')
         tempetherchannel.flush()
         tempetherchannel.close()
+        print('etherchannel done!')
+        input('press enter to continue: ')
         return ports              
 
 def port_sec(hostname):
@@ -325,6 +343,8 @@ def port_sec(hostname):
                 tempmanual.write(f'{configp}\n')
                 tempmanual.flush()
                 tempmanual.close()
+                print('manual aging done!')
+                input('press enter to continue: ')
                 continue       
 
         elif security_mode == 'sticky' or security_mode == 'Sticky':
@@ -353,6 +373,8 @@ def port_sec(hostname):
                 tempsticky.write(f'{configp}\n')
                 tempsticky.flush()
                 tempsticky.close()
+                print('sticky aging done!')
+                input('press enter to continue: ')
                 continue
 
         elif security_mode == 'dynamic' or security_mode == 'Dynamic':
@@ -378,6 +400,8 @@ def port_sec(hostname):
                 tempdynamic.write(f'{configp}\n')
                 tempdynamic.flush()
                 tempdynamic.close()
+                print('dynamic aging done!')
+                input('press enter to continue: ')
                 continue
 
         elif security_mode == 'shutdown' or security_mode == 'Shutdown':
@@ -396,6 +420,8 @@ def port_sec(hostname):
                 tempshutdown.write(f'{configp}\n')
                 tempshutdown.flush()
                 tempshutdown.close()
+                print('shutdown done!')
+                input('press enter to continue: ')
                 continue  
 
         elif security_mode == 'violation.aging' or security_mode == 'Violation.aging':
@@ -427,6 +453,8 @@ def port_sec(hostname):
                     temptime.write(f'{configp}\n')
                     temptime.flush()
                     temptime.close()
+                    print('aging time done!')
+                    input('press enter to continue: ')
                     continue
         
             elif aging_mode == 'static' or aging_mode == 'Static':
@@ -450,6 +478,8 @@ def port_sec(hostname):
                     tempstatic.write(f'{wait}\n')
                     tempstatic.flush()
                     tempstatic.close()
+                    print('aging static done!')
+                    input('press enter to continue: ')
                     continue
 
         elif security_mode == 'EXIT' or security_mode == 'exit':
@@ -459,8 +489,6 @@ def port_sec(hostname):
         else:
             continue
                 
-
-
 def mitigate_dhcp_attacks_and_arp(hostname):
     configp = f"waitln '{hostname}(config)#'"
     mitigate_dhcp_attacks_and_arp = True
@@ -499,19 +527,25 @@ def mitigate_dhcp_attacks_and_arp(hostname):
                 tempdhcp_snooping.write(f'{configp}\n')
                 tempdhcp_snooping.flush()
                 tempdhcp_snooping.close()
+                print('dhcp-snooping done!')
+                input('press enter to continue: ')
                 continue
         
         elif arp_or_dhcp == 'arp-inspection':
             vlans = input('enter vlans for arp inspection seperated by (,): ')
+            ports_trusted = input('enter trusted ports for arp inspection: ')
             enable_arp = f"sendln 'ip arp inspection vlan {vlans}'"
+            enable_trust = f"sendln'ip arp inspection trust'"
             with open('tempstart.ttl', 'at') as temparp_inspection:
                 temparp_inspection.write(f'{configp}\n')
                 temparp_inspection.write(f'{enable_arp}\n')
                 temparp_inspection.write(f'{configp}\n')
                 temparp_inspection.flush()
                 temparp_inspection.close()
+                print('arp-inspection done')
+                input('press enter to continue: ')
                 continue
-            
+        
         elif arp_or_dhcp == 'EXIT' or arp_or_dhcp == 'exit':
             mitigate_dhcp_attacks_and_arp = False
             return
@@ -548,6 +582,8 @@ def stp_(hostname):
         tempstp.write(f'{configp}\n')
         tempstp.flush()
         tempstp.close()
+        print('stp done!')
+        input('press enter to continue: ')
         return ports
 
 def start_(hostname):
@@ -579,6 +615,8 @@ def start_(hostname):
         tempstart.write(f'{configp_w_host}\n')
         tempstart.flush()
         tempstart.close()
+        print('initialization done!')
+        input('press enter to continue: ')
         return 
 
 def finish_(hostname):
@@ -606,6 +644,8 @@ def finish_(hostname):
         tempfinish.write(f'{stop_logging}\n')
         tempfinish.flush()
         tempfinish.close()
+        print('finish macro done!')
+        input('press enter to continue: ')
         return
         
         
@@ -665,6 +705,8 @@ def delete_save(hostname):
         tempdelete.write(f'{reload_confirm_no}\n')
         tempdelete.flush()
         tempdelete.close()
+        print('delete macro done!')
+        input('press enter to continue: ')
         return 
     
 
@@ -696,6 +738,8 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
         tempBlackhole_ParkingLot.write(f'{configp}\n')
         tempBlackhole_ParkingLot.flush()
         tempBlackhole_ParkingLot.close()
+        print('parking lot done!')
+        input('press enter to continue: ')
         return park_ports
 
 def clear_screen():
@@ -724,8 +768,8 @@ pause = input('press return: ')
 hostname = input('enter machines hostname: ')
 program_running = True
 while program_running is True:    
-    clear_screen()
     tempstart = filecheck()
+    clear_screen()
     menu_input = menu()
     while menu_input == '1':
         start_(hostname)
