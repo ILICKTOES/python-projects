@@ -38,7 +38,7 @@ def clock(hostname):
     mon = input(('clock month: ').capitalize())
     yr = input('clock year: ')
     print(f'Setting clock to {hr}:{mn}:00 {dy} {mon} {yr}\n')
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     clock_complete = f"sendln 'do clock set {hr}:{mn}:00 {dy} {mon} {yr}'"  
     with open('tempstart.ttl', 'at') as tempclock:
         tempclock.write(f'{configp}\n')
@@ -49,7 +49,7 @@ def clock(hostname):
         return
 
 def line_con(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waite = f"waitln '{hostname}#'"
     waitl = f"waitln '{hostname}(config-line)#'"
     password = input('console line password: ')
@@ -57,7 +57,6 @@ def line_con(hostname):
     login = "sendln 'login'"
     logging_sync = "sendln 'logging synchronous'"
     passw_c = f"sendln 'password {password}'"
-    wait = f"waitln '{hostname}>'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvty_password:
@@ -79,7 +78,7 @@ def line_con(hostname):
         return
 
 def vty_line(hostname):            
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waite = f"waitln '{hostname}#'"
     waitl = f"waitln '{hostname}(config-line)#'"
     password = input('vty lines password: ')
@@ -108,7 +107,7 @@ def vty_line(hostname):
         return
 
 def a_vlans(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
     vname = input('vlan name ex. 10: ')
@@ -136,7 +135,7 @@ def a_vlans(hostname):
 
 def c_vlans(hostname):
     waitv = f"waitln '{hostname}(config-vlan)#'"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waite = f"waitln '{hostname}#'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
@@ -159,7 +158,7 @@ def c_vlans(hostname):
         return
 
 def ip_gateway(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waite = f"waitln '{hostname}#'"
     ip_add = input('ip default-gateway: ')
     default_gateway = f"sendln 'ip default-gateway {ip_add}'"
@@ -178,7 +177,7 @@ def ip_gateway(hostname):
         return
 
 def vlan_ip(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
     vname = input('vlan name ex. vlan 10: ')
@@ -206,7 +205,7 @@ def vlan_ip(hostname):
         return
 
 def trunking_m(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
     allowedp = input('allowed vlans seperate with comma do not MISSTYPE!!!: ') 
@@ -240,7 +239,7 @@ def trunking_m(hostname):
         return ports
 
 def etherchannel(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
     active_LACP = "active=LACP unconditionally\n"
@@ -293,7 +292,7 @@ def port_sec(hostname):
     security = True
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
     wait = f"waitln '{hostname}>'"
@@ -463,7 +462,7 @@ def port_sec(hostname):
 
 
 def mitigate_dhcp_attacks_and_arp(hostname):
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     mitigate_dhcp_attacks_and_arp = True
     while mitigate_dhcp_attacks_and_arp == True:
         arp_or_dhcp = input('enter dhcp-snooping or arp-inspection or EXIT: ')
@@ -526,7 +525,7 @@ def stp_(hostname):
     mode = input('enter rapid-pvst, pvst or mst: ')
     waite = f"waitln '{hostname}#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     port_mode = f"sendln 'spanning-tree mode {mode}'"
     port_ports = f"sendln 'int range {ports}'"
     configt = "sendln 'configure terminal'"
@@ -552,9 +551,6 @@ def stp_(hostname):
         return ports
 
 def start_(hostname):
-    if os.path.exists('tempstart.ttl'):
-        print('')
-        return
     connect = "connect '/C=3'"
     setsync = "setsync 1"                                                     
     password = input('enable secret password: ')
@@ -564,7 +560,7 @@ def start_(hostname):
     wait = f"waitln 'Switch>'"
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
-    configp = f"waitln 'Switch(config)#"
+    configp = f"waitln 'Switch(config)#'"
     configp_w_host = f"waitln '{hostname}(config)#"
     hostname_command = f"sendln 'hostname {hostname}'"
     with open('tempstart.ttl', 'w+') as tempstart:
@@ -591,7 +587,7 @@ def finish_(hostname):
     log_file = Desktop / f"{name_of_file}.log"
     start_logging = f"logopen '{str(log_file)}'"
     stop_logging = "logclose"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     save = "sendln 'do copy running-config startup-config'"
     save_prompt = "waitln 'Destination filename [startup-config]?'"
     show = "sendln 'do show start'"
@@ -615,7 +611,7 @@ def finish_(hostname):
         
 
 def delete_save(hostname):
-    starting_prompt = f"waitln 'Press RETURN to get started!'"
+    starting_prompt = f"waitln 'Press RETURN to get started!: '"
     waite = f"waitln '{hostname}#'"
     wait = f"waitln '{hostname}>'"
     waitp = "waitln 'Password:'"
@@ -632,7 +628,7 @@ def delete_save(hostname):
     reload = "sendln 'do reload in 0'"
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     vlan_dat_delete_prompt = "waitln 'Delete filename [vlan.dat]?'"
     vlan_dat_delete_prompt_confirm = "waitln '[confirm]'"
     reload_prompt = "waitln 'Proceed with reload? [confirm]'"
@@ -684,7 +680,7 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
     end = "sendln 'end'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
-    configp = f"waitln '{hostname}(config)#"
+    configp = f"waitln '{hostname}(config)#'"
     configt = "sendln 'configure terminal'"
     with open('tempstart.ttl', 'at') as tempBlackhole_ParkingLot:
         tempBlackhole_ParkingLot.write(f'{configp}\n')
@@ -722,10 +718,10 @@ while loop, checking value of 'menu_Input' if value is on list then continue the
 each 'elif' is checking for specific input value to call respective functions
 includes an exit and "mysterious values" or "unknown" check at the bottom of the loop 
 '''
-print('use start set hostname and initialize Macro file')
-print('finish and delete are seperate files and can be chosen after macro is set')
-pause = input('press return')
-hostname = input('enter machines hostname')
+print('use start. to initialize Macro file.')
+print('finish and delete are seperate files, and can be chosen after macro is set.')
+pause = input('press return: ')
+hostname = input('enter machines hostname: ')
 program_running = True
 while program_running is True:    
     clear_screen()
