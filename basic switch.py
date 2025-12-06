@@ -7,9 +7,8 @@ CTN - computer techinician script
 '''
 from pathlib import Path
 import os
-
 def menu():
-    print("-----------------------\n")
+    print("-Macro-Maker-----------\n")
     print("1."+"Set clock\n")
     print("2."+"Hostname & EXEC password\n")
     print("3."+"Console line config")
@@ -21,13 +20,16 @@ def menu():
     print("9."+"Manual trunking\n")
     print("10."+"Etherchannel & Trunking\n")
     print("11."+"STP & PVST config\n")
-    print("12."+"Port security & Violation")
-    print()
-    print("14."+"Save config\n")
-    print("15."+"Show po\n")
-    print("16."+"Exit\n")
-    print("-----------------------")
-    return
+    print("12."+"Parking_Lot & Blackhole vlan\n")
+    print("13."+"port security & Violation\n")
+    print("14."+"dhcp snooping & arp inspection\n")
+    print("15."+"show configured ports\n")
+    print("16."+"finish & save config\n")
+    print("17."+"delete startup-config & reload\n")
+    print("Type EXIT to quit\n")
+    print("-----------------------\n")
+    selection = input('select option')
+    return selection
 
 def clock(hostname):
     hr = input('clock hour: ')
@@ -45,23 +47,6 @@ def clock(hostname):
         tempclock.flush()
         tempclock.close()
         return
-
-def s_cisco(hostname):
-    configp = f"waitln '{hostname}(config)#"
-    hostname = input('hostname: ')
-    password = input('enable secret password: ')
-    hostname_command = f"sendln 'hostname {hostname}'"
-    login = "sendln 'login'"
-    passw_secret = f"sendln 'enable secret {password}'"
-    with open('tempstart.ttl', 'at') as temphostname_secret_password:
-        temphostname_secret_password.write(f'{configp}\n')
-        temphostname_secret_password.write(f'{hostname_command}\n')
-        temphostname_secret_password.write(f'{configp}\n')
-        temphostname_secret_password.write(f'{passw_secret}\n')
-        temphostname_secret_password.write(f'{configp}\n')
-        temphostname_secret_password.write(f'{login}\n')
-        temphostname_secret_password.write(f'{configp}\n')
-        return hostname
 
 def line_con(hostname):
     configp = f"waitln '{hostname}(config)#"
@@ -155,25 +140,23 @@ def c_vlans(hostname):
     waite = f"waitln '{hostname}#'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
-    vlancr = input('do you want to create vlan? Y/N: ')
-    if vlancr == 'Y' or vlancr == 'y':
-        vname = input('name for vlan ex. guests: ')
-        vnum = input('vlan number: ')
-        vlan_create = f"sendln 'vlan {vnum}'"
-        vlan_name = f"sendln 'name {vname}'"
-        with open('tempstart.ttl', 'at') as tempcreate_vlan:
-            tempcreate_vlan.write(f'{configp}\n')
-            tempcreate_vlan.write(f'{vlan_create}\n')
-            tempcreate_vlan.write(f'{waitv}\n')
-            tempcreate_vlan.write(f'{vlan_name}\n')
-            tempcreate_vlan.write(f'{waitv}\n')
-            tempcreate_vlan.write(f'{end}\n')
-            tempcreate_vlan.write(f'{waite}\n')
-            tempcreate_vlan.write(f'{configt}\n')
-            tempcreate_vlan.write(f'{configp}\n')
-            tempcreate_vlan.flush()
-            tempcreate_vlan.close()
-            return
+    vname = input('name for vlan ex. guests: ')
+    vnum = input('vlan number: ')
+    vlan_create = f"sendln 'vlan {vnum}'"
+    vlan_name = f"sendln 'name {vname}'"
+    with open('tempstart.ttl', 'at') as tempcreate_vlan:
+        tempcreate_vlan.write(f'{configp}\n')
+        tempcreate_vlan.write(f'{vlan_create}\n')
+        tempcreate_vlan.write(f'{waitv}\n')
+        tempcreate_vlan.write(f'{vlan_name}\n')
+        tempcreate_vlan.write(f'{waitv}\n')
+        tempcreate_vlan.write(f'{end}\n')
+        tempcreate_vlan.write(f'{waite}\n')
+        tempcreate_vlan.write(f'{configt}\n')
+        tempcreate_vlan.write(f'{configp}\n')
+        tempcreate_vlan.flush()
+        tempcreate_vlan.close()
+        return
 
 def ip_gateway(hostname):
     configp = f"waitln '{hostname}(config)#"
@@ -488,11 +471,9 @@ def mitigate_dhcp_attacks_and_arp(hostname):
             waiti = f"waitln '{hostname}(config-if-range)#'"
             enable_snooping = "sendln 'ip dhcp snooping'"
             ports_router = input('enter port for router/dhcp server: ')
-            print('leave options blank if needed for vlan(s) or trusted ports')
-            print('choose 1 of the options or both')
             ports_trusted = input('enter trusted ports for dhcp snooping : ')
             limit = input('enter snooping rate #: ')
-            vlans = input('enter vlans for snooping seperated: ')
+            vlans = input('enter vlans for snooping seperated by (,): ')
             snooping_switch = f"sendln 'int range {ports_trusted}'"
             snooping_router = f"sendln 'int range {ports_router}'"
             snooping_vlans = f"sendln 'ip dhcp snooping vlan {vlans}'"
@@ -571,13 +552,21 @@ def stp_(hostname):
         return ports
 
 def start_(hostname):
+    if os.path.exists('tempstart.ttl'):
+        print('')
+        return
     connect = "connect '/C=3'"
-    setsync = "setsync 1"
-    waite = f"waitln '{hostname}#'"
-    wait = f"waitln '{hostname}>'"
-    configp = f"waitln '{hostname}(config)#"
+    setsync = "setsync 1"                                                     
+    password = input('enable secret password: ')
+    passw_secret = f"sendln 'enable secret {password}'"
+    login = "sendln 'login'"
+    waite = f"waitln 'Switch#'"
+    wait = f"waitln 'Switch>'"
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
+    configp = f"waitln 'Switch(config)#"
+    configp_w_host = f"waitln '{hostname}(config)#"
+    hostname_command = f"sendln 'hostname {hostname}'"
     with open('tempstart.ttl', 'w+') as tempstart:
         tempstart.write(f'{setsync}\n')
         tempstart.write(f'{connect}\n')
@@ -586,9 +575,15 @@ def start_(hostname):
         tempstart.write(f'{waite}\n')
         tempstart.write(f'{configt}\n')
         tempstart.write(f'{configp}\n')
+        tempstart.write(f'{hostname_command}\n')
+        tempstart.write(f'{configp_w_host}\n')
+        tempstart.write(f'{passw_secret}\n')
+        tempstart.write(f'{configp_w_host}\n')
+        tempstart.write(f'{login}\n')
+        tempstart.write(f'{configp_w_host}\n')
         tempstart.flush()
         tempstart.close()
-        return
+        return 
 
 def finish_(hostname):
     name_of_file = input('enter name for log file without .log: ')
@@ -645,7 +640,6 @@ def delete_save(hostname):
     reload_confirm_no = "sendln 'no'"
     with open('tempdelete.ttl', 'w+') as tempdelete:
         tempdelete.write(f'{setsync}\n')
-        tempdelete.write(f'{wait}\n')
         tempdelete.write(f'{connect}\n')
         tempdelete.write(f'{starting_prompt}\n')
         tempdelete.write(f'{carriage_return}\n')
@@ -708,140 +702,174 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
         tempBlackhole_ParkingLot.close()
         return park_ports
 
+def clear_screen():
+    os.system('cls')
+    return
 
-
-
+def filecheck():
+    try:
+        with open('tempstart.ttl') as check:
+            check.close()
+            return 'y'
+    
+    except FileNotFoundError:
+        print('tempstart not found')
+        input('press enter to continue:')
+        return 
 
 '''
-while loop, checking value of 'menu_Input' if value is not '0' then continue the loop
+while loop, checking value of 'menu_Input' if value is on list then continue the loop
 each 'elif' is checking for specific input value to call respective functions
 includes an exit and "mysterious values" or "unknown" check at the bottom of the loop 
 '''
-
-startup_menu = True
-while startup_menu is True:
-    print('if hostname exists it will add to existing script')
-    print('if not it will change it')
-    hostname = input('please enter hostname')    
-    program_running = True
-    while program_running is True:    
-        menu()
-        menu_input = input("Please enter a number or EXIT: ")
-        if menu_input == '1':
-            hostname = s_cisco(hostname)
-            continue
-            
-        elif menu_input == '2':
+print('use start set hostname and initialize Macro file')
+print('finish and delete are seperate files and can be chosen after macro is set')
+pause = input('press return')
+hostname = input('enter machines hostname')
+program_running = True
+while program_running is True:    
+    clear_screen()
+    tempstart = filecheck()
+    menu_input = menu()
+    while menu_input == '1':
+        start_(hostname)
+        break 
+    
+    while menu_input == '2':
+        if tempstart == 'y':
             clock(hostname)
-            continue
-
-        elif menu_input == '3':
+            break
+        
+        else:
+            break
+            
+    while menu_input == '3':
+        if tempstart == 'y':
             line_con(hostname)
-            continue
-            
-        elif menu_input == '4':
+            break
+        
+        else:
+            break
+
+    while menu_input == '4':
+        if tempstart == 'y':
             vty_line(hostname)
-            continue
+            break
+        
+        else:
+            break
 
-        elif menu_input == '5':
+    while menu_input == '5':
+        if tempstart == 'y':
             c_vlans(hostname)   
-            continue
+            break
+        
+        else:
+            break
 
-        elif menu_input == '6':
+    while menu_input == '6':
+        if tempstart == 'y':
             port_result1 = a_vlans(hostname)
-            continue
-            
-        elif menu_input == '7':
+            break
+        
+        else:
+            break
+
+    while menu_input == '7':
+        if tempstart == 'y':
             vlan_ip(hostname)
-            continue
+            break
+        
+        else:
+            break
 
-        elif menu_input == '8':
+    while menu_input == '8':
+        if tempstart == 'y':
             ip_gateway(hostname)
-            continue
-            
-        elif menu_input == '9':
+            break
+        
+        else:
+            break
+
+    while menu_input == '9':
+        if tempstart == 'y':
             port_result2 = trunking_m(hostname)
-            continue
-
-        elif menu_input == '10':
-            port_result2 = etherchannel(hostname)
-            continue
-
-        elif menu_input == '11':
-            port_result3 = stp_(hostname)
-            continue
-
-        elif menu_input == '12':
-            Blackhole_ports = ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3)
-            continue
-            
-        elif menu_input == '13':
-            port_sec(hostname)
-            continue
-            
-        elif menu_input == '14':
-            mitigate_dhcp_attacks_and_arp(hostname)
-            continue
-
-        elif menu_input == '15':
-            print(f'vlan ports: {port_result1}')
-            print(f'etherchannel & trunking ports: {port_result2}')
-            print(f'stp enabled ports: {port_result3}')
-            print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
-            print(f'hostname: {hostname}')
-            pause = input('press ENTER to continue...')
-            continue
-
-        elif menu_input == '16':
-            finish_(hostname)
-            os.remove('tempstart.ttl')
-            continue
-            
-        elif menu_input == '17':
-            delete_save(hostname)
-            os.remove('tempfinish.ttl')
-            continue
-
-        elif menu_input == 'EXIT' or menu_input == 'exit':
-            print("Goodbye!!!?")
-            os.remove('tempdelete.ttl')
             break
 
         else:
-            print('invalid input!!!')
-            continue
-            
-else:
-    print('program error!!!')
-    
-  
-  def menu():
-    print("-----------------------\n")
-    print("1."+"Set clock\n")
-    print("2."+"Hostname & EXEC password\n")
-    print("3."+"Console line config")
-    print("4."+"VTY line config\n")
-    print("5."+"Create vlans\n")
-    print("6."+"Assign ports to vlans\n")
-    print("7."+"Add ip to vlans\n")
-    print("8."+"Default gateway\n")
-    print("9."+"Manual trunking\n")
-    print("10."+"Etherchannel & Trunking\n")
-    print("11."+"STP & PVST config\n")
-    print(")12."+"Parking_Lot & Blackhole vlan\n")
-    print("13."+"port security & Violation\n")
-    print("14."+"dhcp snooping & arp inspection\n")
-    print("15."+"show configured ports\n")
-    print("16."+"finish & save config\n")
-    print("17."+"delete startup-config & reload\n")
-    print("Type EXIT to quit\n")
-    print("-----------------------")
-    return
+            break
+
+    while menu_input == '10':
+        if tempstart == 'y':
+            port_result2 = etherchannel(hostname)
+            break
+        
+        else:
+            break
+
+    while menu_input == '11':
+        if tempstart == 'y':
+            port_result3 = stp_(hostname)
+            break
+        
+        else:
+            break
+
+    while menu_input == '12':
+        if tempstart == 'y':
+            Blackhole_ports = ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3)
+            break
+        
+        else:
+            break
+
+    while menu_input == '13':
+        if tempstart == 'y':
+            port_sec(hostname)
+            break
+        
+        else:
+            break
+
+    while menu_input == '14':
+        if tempstart == 'y':
+            mitigate_dhcp_attacks_and_arp(hostname)
+            break
+
+        else:
+            break
+
+    while menu_input == '15':
+        print(f'vlan ports: {port_result1}')
+        print(f'etherchannel & trunking ports: {port_result2}')
+        print(f'stp enabled ports: {port_result3}')
+        print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
+        print(f'hostname: {hostname}')
+        pause = input('press ENTER to continue...')
+        break
+
+    while menu_input == '16':
+        finish_(hostname)
+        break
+        
+    while menu_input == '17':
+        delete_save(hostname)
+        os.remove('tempfinish.ttl')
+        os.remove('tempstart.ttl')
+        break
+
+    if menu_input == 'EXIT' or menu_input == 'exit':
+        print("Goodbye!!!?")
+        os.remove('tempdelete.ttl')
+        continue
+
+    else:
+        continue                
                         
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 1.0
+version: 2.0
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
