@@ -884,25 +884,22 @@ while program_running is True:
             break
 
     while menu_input == '15':
-        if port_result1 != None:
+        if port_result1 is not None:
             print(f'vlan ports: {port_result1}')
-        
-        elif port_result2 != None:    
+            
+        if port_result2 is not None:    
             print(f'etherchannel & trunking ports: {port_result2}')
         
-        elif port_result3 != None:    
+        if port_result3 is not None:    
             print(f'stp enabled ports: {port_result3}')
         
-        elif Blackhole_ports != None:
+        if Blackhole_ports is not None:
             print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
 
-        elif hostname != None:    
+        if hostname is not None:    
             print(f'hostname: {hostname}')
             pause = input('press ENTER to continue...')
             break
-        
-        else:
-            continue
         
     while menu_input == '16':
         finish_(hostname)
