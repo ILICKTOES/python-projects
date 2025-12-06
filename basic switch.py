@@ -884,20 +884,37 @@ while program_running is True:
             break
 
     while menu_input == '15':
-        if port_result1 is not None:
+        try:
             print(f'vlan ports: {port_result1}')
+        
+        except NameError:
+            print(f'vlan ports: None')    
             
-        if port_result2 is not None:    
+        try:            
             print(f'etherchannel & trunking ports: {port_result2}')
         
-        if port_result3 is not None:    
+        except NameError:
+            print(f'etherchannel & trunking ports: None')
+
+        try:    
             print(f'stp enabled ports: {port_result3}')
         
-        if Blackhole_ports is not None:
+        except NameError:
+            print(f'stp enabled ports: None')
+
+        try:
             print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
 
-        if hostname is not None:    
+        except NameError:
+            print(f'Parking_Lot or Blackhole ports: None')
+                  
+        try:
             print(f'hostname: {hostname}')
+            
+        except NameError:
+            print(f'hostname: None')
+        
+        finally:
             pause = input('press ENTER to continue...')
             break
         
@@ -933,7 +950,7 @@ while program_running is True:
 '''
 switch config script generator
 by: @ILICKTOES 
-version: 3.0
+version: 3.2
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
 The script will create a temporary .ttl file with the specified configurations.
