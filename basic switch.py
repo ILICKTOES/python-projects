@@ -3,11 +3,12 @@ Jacob Genereaux
 
 FOLID:j_genereaux
 Student#:1298774
-CTN - computer techinician script
+CTN - computer technician script
 '''
+from datetime import datetime as dt
 from pathlib import Path
 import os
-import sys
+import calendar as cal
 
 def menu():
     print("-Macro-Maker-----------\n")
@@ -30,24 +31,40 @@ def menu():
     print("17."+"delete startup-config & reload\n")
     print("Type EXIT to quit\n")
     print("-----------------------\n")
-    selection = input('select option: ')
-    return selection
+    return input('select option: ')
 
 def clock(hostname):
-    hr = input('clock hour: ')
-    mn = input('clock minutes: ')
-    dy = input('clock day #: ')
-    mon = input(('clock month: ').capitalize())
-    yr = input('clock year: ')
-    print(f'Setting clock to {hr}:{mn}:00 {dy} {mon} {yr}\n')
+    class time_now():
+        def __init__(self):
+            self.time = str(dt().time()).replace('.', ':').replace(' ', ':').split(':')
+
+        def hr(self):
+            return str(self.time[1])
+
+        def yr(self):
+            return str(self.time[0].split('-')[0])
+
+        def mn(self):
+            return str(cal.month_name(int(self.time[0].split('-')[1])))
+            
+        def min(self):
+            return str(self.time[2])
+        
+        def dy(self):
+            return str(self.time[0].split('-')[2])
+        
+    print(f'Setting clock to {time_now().hr()}:{time_now().min()}:00 {time_now().dy()} {time_now().mn()} {time_now().yr()}\n')
     configp = f"waitln '{hostname}(config)#'"
-    clock_complete = f"sendln 'do clock set {hr}:{mn}:00 {dy} {mon} {yr}'"  
+    clock_complete = f"sendln 'do clock set {time_now().hr()}:{time_now().min()}:00 {time_now().dy()} {time_now().mn()} {time_now().yr()}'"  
     with open('tempstart.ttl', 'at') as tempclock:
-        tempclock.write(f'{configp}\n')
-        tempclock.write(f'{clock_complete}\n')
-        tempclock.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    clock_complete,
+                    configp,
+                    ]
+        tempclock.writelines(f'{commands}\n'\
+        for com in commands)
         tempclock.flush()
-        tempclock.close()
         print('clock finished!')
         input('press enter to continue: ')
         return
@@ -64,21 +81,24 @@ def line_con(hostname):
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvty_password:
-        tempvty_password.write(f'{configp}\n')
-        tempvty_password.write(f'{line_con}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{passw_c}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{login}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{logging_sync}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{end}\n')
-        tempvty_password.write(f'{waite}\n')
-        tempvty_password.write(f'{configt}\n')
-        tempvty_password.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    line_con,
+                    waitl,
+                    passw_c,
+                    waitl,
+                    login,
+                    waitl,
+                    logging_sync,
+                    waitl,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempvty_password.writelines(f'{commands}\n'\
+        for com in commands)
         tempvty_password.flush()
-        tempvty_password.close()
         print('line con done!')
         input('press enter to continue: ')
         return
@@ -95,21 +115,24 @@ def vty_line(hostname):
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvty_password:
-        tempvty_password.write(f'{configp}\n')
-        tempvty_password.write(f'{line_vty}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{passw_v}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{login}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{logging_sync}\n')
-        tempvty_password.write(f'{waitl}\n')
-        tempvty_password.write(f'{end}\n')
-        tempvty_password.write(f'{waite}\n')
-        tempvty_password.write(f'{configt}\n')
-        tempvty_password.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    line_vty,
+                    waitl,
+                    passw_v,
+                    waitl,
+                    login,
+                    waitl,
+                    logging_sync,
+                    waitl,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempvty_password.writelines(f'{commands}\n'\
+        for com in commands)
         tempvty_password.flush()
-        tempvty_password.close()
         print('vty-lines done!')
         input('press enter to continue: ')
         return
@@ -120,25 +143,28 @@ def a_vlans(hostname):
     waite = f"waitln '{hostname}#'"
     vname = input('vlan name ex. 10: ')
     ports = input('enter range or port to assign vlan: ')
-    port_ports = f"sendln 'interface range {ports}'"
+    port_ports = f"sendln 'interface range G{ports}'"
     access = "sendln 'switchport mode access'"
     assign = f"sendln 'switchport access vlan {vname}'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempassign_ports_vlan:
-        tempassign_ports_vlan.write(f'{configp}\n')
-        tempassign_ports_vlan.write(f'{port_ports}\n')
-        tempassign_ports_vlan.write(f'{waiti}\n')
-        tempassign_ports_vlan.write(f'{access}\n')
-        tempassign_ports_vlan.write(f'{waiti}\n')
-        tempassign_ports_vlan.write(f'{assign}\n')
-        tempassign_ports_vlan.write(f'{waiti}\n')
-        tempassign_ports_vlan.write(f'{end}\n')
-        tempassign_ports_vlan.write(f'{waite}\n')
-        tempassign_ports_vlan.write(f'{configt}\n')
-        tempassign_ports_vlan.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    port_ports,
+                    waiti,
+                    access,
+                    waiti,
+                    assign,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempassign_ports_vlan.writelines(f'{commands}\n'\
+        for com in commands)
         tempassign_ports_vlan.flush()
-        tempassign_ports_vlan.close()
         print('assigned ports to vlans!')
         input('press enter to continue: ')
         return ports
@@ -154,17 +180,20 @@ def c_vlans(hostname):
     vlan_create = f"sendln 'vlan {vnum}'"
     vlan_name = f"sendln 'name {vname}'"
     with open('tempstart.ttl', 'at') as tempcreate_vlan:
-        tempcreate_vlan.write(f'{configp}\n')
-        tempcreate_vlan.write(f'{vlan_create}\n')
-        tempcreate_vlan.write(f'{waitv}\n')
-        tempcreate_vlan.write(f'{vlan_name}\n')
-        tempcreate_vlan.write(f'{waitv}\n')
-        tempcreate_vlan.write(f'{end}\n')
-        tempcreate_vlan.write(f'{waite}\n')
-        tempcreate_vlan.write(f'{configt}\n')
-        tempcreate_vlan.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    vlan_create,
+                    waitv,
+                    vlan_name,
+                    waitv,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempcreate_vlan.writelines(f'{commands}\n'\
+        for com in commands)
         tempcreate_vlan.flush()
-        tempcreate_vlan.close()
         print('vlan created!')
         input('press enter to continue: ')
         return
@@ -177,15 +206,18 @@ def ip_gateway(hostname):
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempdefault_gateway:
-        tempdefault_gateway.write(f'{configp}\n')
-        tempdefault_gateway.write(f'{default_gateway}\n')
-        tempdefault_gateway.write(f'{configp}\n')
-        tempdefault_gateway.write(f'{end}\n')
-        tempdefault_gateway.write(f'{waite}\n')
-        tempdefault_gateway.write(f'{configt}\n')
-        tempdefault_gateway.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    default_gateway,
+                    configp,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempdefault_gateway.writelines(f'{commands}\n'\
+        for com in commands)
         tempdefault_gateway.flush()
-        tempdefault_gateway.close()
         print('default-gateway done!')
         input('press enter to continue: ')
         return
@@ -203,19 +235,22 @@ def vlan_ip(hostname):
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     with open('tempstart.ttl', 'at') as tempvlan_ip:
-        tempvlan_ip.write(f'{configp}\n')
-        tempvlan_ip.write(f'{interface_vlan}\n')
-        tempvlan_ip.write(f'{waiti}\n')
-        tempvlan_ip.write(f'{assign_ip}\n')
-        tempvlan_ip.write(f'{waiti}\n')
-        tempvlan_ip.write(f'{no_shutdown}\n')
-        tempvlan_ip.write(f'{waiti}\n')
-        tempvlan_ip.write(f'{end}\n')
-        tempvlan_ip.write(f'{waite}\n')
-        tempvlan_ip.write(f'{configt}\n')
-        tempvlan_ip.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    interface_vlan,
+                    waiti,
+                    assign_ip,
+                    waiti,
+                    no_shutdown,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempvlan_ip.writelines(f'{commands}\n'\
+        for com in commands)
         tempvlan_ip.flush()
-        tempvlan_ip.close()
         print('vlan ip done!')
         input('press enter to continue: ')
         return
@@ -224,34 +259,37 @@ def trunking_m(hostname):
     configp = f"waitln '{hostname}(config)#'"
     waiti = f"waitln '{hostname}(config-if-range)#'"
     waite = f"waitln '{hostname}#'"
-    allowedp = input('allowed vlans seperate with comma do not MISSTYPE!!!: ') 
+    allowedp = input('allowed vlans separate with comma do not MISTYPE!!!: ') 
     native = input('native vlan: ')
     ports = input('enter range or port to trunk: ')
-    port_ports = f"sendln 'int range {ports}'"
+    port_ports = f"sendln 'int range G{ports}'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     trunk = f"sendln 'switchport mode trunk'"
-    nonegociate = f"sendln 'switchport nonegociate'"
+    nonegotiate = f"sendln 'switchport nonegotiate'"
     trunk_native = f"sendln 'switchport trunk native vlan {native}'"              
     trunk_allowed = f"sendln 'switchport trunk allowed vlan {allowedp},{native}'"
     with open('tempstart.ttl', 'at') as tempmanual_trunking:
-        tempmanual_trunking.write(f'{configp}\n')
-        tempmanual_trunking.write(f'{port_ports}\n')
-        tempmanual_trunking.write(f'{waiti}\n')
-        tempmanual_trunking.write(f'{trunk}\n')
-        tempmanual_trunking.write(f'{waiti}\n')
-        tempmanual_trunking.write(f'{nonegociate}\n')
-        tempmanual_trunking.write(f'{waiti}\n')
-        tempmanual_trunking.write(f'{trunk_native}\n')
-        tempmanual_trunking.write(f'{waiti}\n')
-        tempmanual_trunking.write(f'{trunk_allowed}\n')
-        tempmanual_trunking.write(f'{waiti}\n')
-        tempmanual_trunking.write(f'{end}\n')
-        tempmanual_trunking.write(f'{waite}\n')
-        tempmanual_trunking.write(f'{configt}\n')
-        tempmanual_trunking.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    port_ports,
+                    waiti,
+                    trunk,
+                    waiti,
+                    nonegotiate,
+                    waiti,
+                    trunk_native,
+                    waiti,
+                    trunk_allowed,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempmanual_trunking.writelines(f'{commands}\n'\
+        for com in commands)
         tempmanual_trunking.flush()
-        tempmanual_trunking.close()
         print('manual trunking done!')
         input('press enter to continue: ')
         return ports
@@ -262,48 +300,51 @@ def etherchannel(hostname):
     waite = f"waitln '{hostname}#'"
     active_LACP = "active=LACP unconditionally\n"
     auto_PAgP = "auto=PAgP if another PAgP device is connected\n"
-    desireable_PAgP = "desireable=PAgP unconditionally\n"
+    desirable_PAgP = "desirable=PAgP unconditionally\n"
     on_enable = "on, or enable=Etherchannel only\n"
     passive_LACP = "passive=LACP if another LACP device is connected\n"
     exit_ = "sendln 'exit'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
-    mode = input(f'{active_LACP}{auto_PAgP}{desireable_PAgP}{on_enable}{passive_LACP}enter etherchannel mode: ')
+    mode = input(f'{active_LACP}{auto_PAgP}{desirable_PAgP}{on_enable}{passive_LACP}enter etherchannel mode: ')
     native = input('native vlan: ')
-    allowedp = input('allowed vlans seperate with comma do not MISSTYPE!!!: ')
+    allowedp = input('allowed vlans separate with comma do not MISTYPE!!!: ')
     ports = input('enter range or port to etherchannel: ')
     channel = input('channel group & port-channel number: ')
-    port_ports = f"sendln 'int range {ports}'"
+    port_ports = f"sendln 'int range G{ports}'"
     channel_group = f"sendln 'channel-group {channel} mode {mode}'"
     port_channel = f"sendln 'int port-channel {channel}'"
     trunk = f"sendln 'switchport mode trunk'"
     trunk_native = f"sendln 'switchport trunk native vlan {native}'"              
     trunk_allowed = f"sendln 'switchport trunk allowed vlan {allowedp},{native}'"
-    nonegociate = f"sendln 'switchport nonegociate'"
+    nonegotiate = f"sendln 'switchport nonegotiate'"
     with open('tempstart.ttl', 'at') as tempetherchannel:
-        tempetherchannel.write(f'{configp}\n')
-        tempetherchannel.write(f'{port_ports}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{channel_group}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{exit_}\n')
-        tempetherchannel.write(f'{configp}\n')
-        tempetherchannel.write(f'{port_channel}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{trunk}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{nonegociate}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{trunk_native}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{trunk_allowed}\n')
-        tempetherchannel.write(f'{waiti}\n')
-        tempetherchannel.write(f'{end}\n')
-        tempetherchannel.write(f'{waite}\n')
-        tempetherchannel.write(f'{configt}\n')
-        tempetherchannel.write(f'{configp}\n')
+        commmands =[
+                    configp,
+                    port_ports,
+                    waiti,
+                    channel_group,
+                    waiti,
+                    exit_,
+                    configp,
+                    port_channel,
+                    waiti,
+                    trunk,
+                    waiti,
+                    nonegotiate,
+                    waiti,
+                    trunk_native,
+                    waiti,
+                    trunk_allowed,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempetherchannel.writelines(f'{commmands}\n'\
+        for com in commmands)
         tempetherchannel.flush()
-        tempetherchannel.close()
         print('etherchannel done!')
         input('press enter to continue: ')
         return ports              
@@ -322,29 +363,32 @@ def port_sec(hostname):
             ports = input('enter range or port for manual assignment of mac: ')
             number_of_mac = input('enter maximum amount of mac addressess: ')
             mac_address = input('enter mac address to manually assign: ')
-            port_ports = f"sendln 'int range {ports}'"
+            port_ports = f"sendln 'int range G{ports}'"
             access = "sendln 'switchport mode access'"
             enable_port_security = "sendln 'switchport port-security'"
             mac_address_limit = f"sendln 'switchport port-security maximum {number_of_mac}'"
             manual = f"sendln 'switchport port-security mac-address {mac_address}'"
             with open('tempstart.ttl', 'at') as tempmanual:
-                tempmanual.write(f'{configp}\n')
-                tempmanual.write(f'{port_ports}\n')
-                tempmanual.write(f'{waiti}\n')
-                tempmanual.write(f'{access}\n')
-                tempmanual.write(f'{waiti}\n')
-                tempmanual.write(f'{enable_port_security}\n')
-                tempmanual.write(f'{waiti}\n')
-                tempmanual.write(f'{mac_address_limit}\n')
-                tempmanual.write(f'{waiti}\n')
-                tempmanual.write(f'{manual}\n')
-                tempmanual.write(f'{waiti}\n')
-                tempmanual.write(f'{end}\n')
-                tempmanual.write(f'{waite}\n')
-                tempmanual.write(f'{configt}\n')
-                tempmanual.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            port_ports,
+                            waiti,
+                            access,
+                            waiti,
+                            enable_port_security,
+                            waiti,
+                            mac_address_limit,
+                            waiti,
+                            manual,
+                            waiti,
+                            end,
+                            waite,
+                            configt,
+                            configp,
+                            ]
+                tempmanual.writelines(f'{commands}\n'\
+                for com in commands)
                 tempmanual.flush()
-                tempmanual.close()
                 print('manual aging done!')
                 input('press enter to continue: ')
                 continue       
@@ -352,134 +396,156 @@ def port_sec(hostname):
         elif security_mode == 'sticky' or security_mode == 'Sticky':
             ports = input('enter range or port for sticky aging: ')
             number_of_mac = input('enter maximum amount of mac addressess: ')
-            port_ports = f"sendln 'int range {ports}'"
+            port_ports = f"sendln 'int range G{ports}'"
             access = "sendln 'switchport mode access'"
             enable_port_security = "sendln 'switchport port-security'"
             mac_address_limit = f"sendln 'switchport port-security maximum {number_of_mac}'"
             sticky = "sendln 'switchport port-security mac-address sticky'"
             with open('tempstart.ttl', 'at') as tempsticky:
-                tempsticky.write(f'{configp}\n')
-                tempsticky.write(f'{port_ports}\n')
-                tempsticky.write(f'{waiti}\n')
-                tempsticky.write(f'{access}\n')
-                tempsticky.write(f'{waiti}\n')
-                tempsticky.write(f'{enable_port_security}\n')
-                tempsticky.write(f'{waiti}\n')
-                tempsticky.write(f'{mac_address_limit}\n')
-                tempsticky.write(f'{waiti}\n')
-                tempsticky.write(f'{sticky}\n')
-                tempsticky.write(f'{waiti}\n')
-                tempsticky.write(f'{end}\n')
-                tempsticky.write(f'{waite}\n')
-                tempsticky.write(f'{configt}\n')
-                tempsticky.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            port_ports,
+                            waiti,
+                            access,
+                            waiti,
+                            enable_port_security,
+                            waiti,
+                            mac_address_limit,
+                            waiti,
+                            sticky,
+                            waiti,
+                            end,
+                            waite,
+                            configt,
+                            configp,
+                            ]
+                tempsticky.writelines(f'{commands}\n'\
+                for com in commands)
                 tempsticky.flush()
-                tempsticky.close()
-                print('sticky aging done!')
+                ('sticky aging done!')
                 input('press enter to continue: ')
                 continue
 
         elif security_mode == 'dynamic' or security_mode == 'Dynamic':
             ports = input('enter range or port for dynamic aging: ')
             number_of_mac = input('enter maximum amount of mac addressess: ')
-            port_ports = f"sendln 'int range {ports}'"
+            port_ports = f"sendln 'int range G{ports}'"
             access = "sendln 'switchport mode access'"
             dynamic = "sendln 'switchport port-security'"
             mac_address_limit = f"sendln 'switchport port-security maximum {number_of_mac}'"
             with open('tempstart.ttl', 'at') as tempdynamic:
-                tempdynamic.write(f'{configp}\n')
-                tempdynamic.write(f'{port_ports}\n')
-                tempdynamic.write(f'{waiti}\n')
-                tempdynamic.write(f'{access}\n')
-                tempdynamic.write(f'{waiti}\n')
-                tempdynamic.write(f'{dynamic}\n')
-                tempdynamic.write(f'{waiti}\n')
-                tempdynamic.write(f'{mac_address_limit}\n')
-                tempdynamic.write(f'{waiti}\n')
-                tempdynamic.write(f'{end}\n')
-                tempdynamic.write(f'{waite}\n')
-                tempdynamic.write(f'{configt}\n')
-                tempdynamic.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            port_ports,
+                            waiti,
+                            access,
+                            waiti,
+                            dynamic,
+                            waiti,
+                            mac_address_limit,
+                            waiti,
+                            end,
+                            waite,
+                            configt,
+                            configp,
+                            ]
+                tempdynamic.writelines(f'{commands}\n'\
+                for com in commands)
                 tempdynamic.flush()
-                tempdynamic.close()
                 print('dynamic aging done!')
                 input('press enter to continue: ')
                 continue
 
         elif security_mode == 'shutdown' or security_mode == 'Shutdown':
             ports = input('enter range or port for shutdown: ')
-            port_ports = f"sendln 'int range {ports}'"
+            port_ports = f"sendln 'int range G{ports}'"
             shutdown = "sendln 'shutdown'"
             with open('tempstart.ttl', 'at') as tempshutdown:
-                tempshutdown.write(f'{configp}\n')
-                tempshutdown.write(f'{port_ports}\n')
-                tempshutdown.write(f'{waiti}\n')
-                tempshutdown.write(f'{shutdown}\n')
-                tempshutdown.write(f'{waiti}\n')
-                tempshutdown.write(f'{end}\n')
-                tempshutdown.write(f'{waite}\n')
-                tempshutdown.write(f'{configt}\n')
-                tempshutdown.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            port_ports,
+                            waiti,
+                            shutdown,
+                            waiti,
+                            end,
+                            waite,
+                            configt,
+                            configp,
+                            ]                                      
+                tempshutdown.writelines(f'{commands}\n'\
+                for com in commands)
                 tempshutdown.flush()
-                tempshutdown.close()
                 print('shutdown done!')
                 input('press enter to continue: ')
                 continue  
+                
 
         elif security_mode == 'violation.aging' or security_mode == 'Violation.aging':
             ports = input('enter range or port for violation & aging: ')
             aging_mode = input('enter aging mode static or time: ')
-            port_ports = f"sendln 'int range {ports}'"
+            port_ports = f"sendln 'int range G{ports}'"
             if aging_mode == 'time' or aging_mode == 'Time':
                 time_in_minutes = input('enter time in minutes: ')
                 port_aging = f"sendln 'switchport port-security aging time {time_in_minutes}'"
                 with open('tempstart.ttl', 'at') as temptime:
-                    temptime.write(f'{configp}\n')
-                    temptime.write(f'{port_ports}\n')
-                    temptime.write(f'{waiti}\n')
-                    temptime.write(f'{port_aging}\n')
-                    temptime.write(f'{waiti}\n')
-                    temptime.write(f'{end}\n')
-                    temptime.write(f'{waite}\n')
-                    temptime.write(f'{configt}\n')
-                    temptime.write(f'{configp}\n')
+                    commands = [
+                                configp,
+                                port_ports,
+                                waiti,
+                                port_aging,
+                                waiti,
+                                end,
+                                waite,
+                                configt,
+                                configp,
+                                ]
+                    temptime.writelines(f'{commands}\n'\
+                    for com in commands)
                     violation_mode = input('enter violation mode > protect,restrict,shutdown: ')
                     port_violation = f"sendln 'switchport port-security violation {violation_mode}'"
-                    temptime.write(f'{port_ports}\n')
-                    temptime.write(f'{waiti}\n')
-                    temptime.write(f'{port_violation}\n')
-                    temptime.write(f'{waiti}\n')
-                    temptime.write(f'{end}\n')
-                    temptime.write(f'{waite}\n')
-                    temptime.write(f'{configt}\n')
-                    temptime.write(f'{configp}\n')
+                    commands = [
+                                port_ports,
+                                waiti,
+                                port_violation,
+                                waiti,
+                                end,
+                                waite,
+                                configt,
+                                configp,
+                                ]
+                    temptime.writelines(f'{commands}\n'\
+                    for com in commands)
                     temptime.flush()
-                    temptime.close()
                     print('aging time done!')
                     input('press enter to continue: ')
                     continue
         
             elif aging_mode == 'static' or aging_mode == 'Static':
                 ports = input('enter range or port for static aging: ')
-                port_ports = f"sendln 'int range {ports}'"
+                port_ports = f"sendln 'int range G{ports}'"
                 port_aging = "sendln 'switchport port-security aging static'"
                 with open('tempstart.ttl', 'at') as tempstatic:
-                    tempstatic.write(f'{wait}\n')
-                    tempstatic.write(f'{port_ports}\n')
-                    tempstatic.write(f'{wait}\n')
-                    tempstatic.write(f'{port_aging}\n')
-                    tempstatic.write(f'{wait}\n')
+                    commands = [
+                                wait,
+                                port_ports,
+                                wait,
+                                port_aging,
+                                wait,
+                                ]
                     violation_mode = input('enter violation mode > protect,restrict,shutdown: ')
                     port_violation = f"sendln 'switchport port-security violation {violation_mode}'"
-                    tempstatic.write(f'{wait}\n')
-                    tempstatic.write(f'{port_violation}\n')
-                    tempstatic.write(f'{wait}\n')
-                    tempstatic.write(f'{end}\n')
-                    tempstatic.write(f'{wait}\n')
-                    tempstatic.write(f'{configt}\n')
-                    tempstatic.write(f'{wait}\n')
+                    commands = [            
+                                wait,
+                                port_violation,
+                                wait,
+                                end,
+                                wait,
+                                configt,
+                                wait,
+                                ]
+                    tempstatic.writelines(f'{commands}\n'\
+                    for com in commands)
                     tempstatic.flush()
-                    tempstatic.close()
                     print('aging static done!')
                     input('press enter to continue: ')
                     continue
@@ -500,50 +566,58 @@ def mitigate_dhcp_attacks_and_arp(hostname):
             waiti = f"waitln '{hostname}(config-if-range)#'"
             enable_snooping = "sendln 'ip dhcp snooping'"
             ports_router = input('enter port for router/dhcp server: ')
-            ports_trusted = input('enter trusted ports for dhcp snooping : ')
+            ports_trusted = input('enter trusted ports for dhcp snooping: ')
             limit = input('enter snooping rate #: ')
-            vlans = input('enter vlans for snooping seperated by (,): ')
-            snooping_switch = f"sendln 'int range {ports_trusted}'"
-            snooping_router = f"sendln 'int range {ports_router}'"
+            vlans = input('enter vlans for snooping separated by (,): ')
+            snooping_switch = f"sendln 'int range G{ports_trusted}'"
+            snooping_router = f"sendln 'int range G{ports_router}'"
             snooping_vlans = f"sendln 'ip dhcp snooping vlan {vlans}'"
             router_trust = "sendln 'ip dhcp snooping trust'"
             snooping_limit = f"sendln 'ip dhcp snooping limit rate {limit}'"
             exit_ = "sendln 'exit'" 
             with open('tempstart.ttl', 'at') as tempdhcp_snooping:
-                tempdhcp_snooping.write(f'{configp}\n')
-                tempdhcp_snooping.write(f'{enable_snooping}\n')
-                tempdhcp_snooping.write(f'{configp}\n')
-                tempdhcp_snooping.write(f'{snooping_router}\n')
-                tempdhcp_snooping.write(f'{waiti}\n')
-                tempdhcp_snooping.write(f'{router_trust}\n')
-                tempdhcp_snooping.write(f'{waiti}\n')
-                tempdhcp_snooping.write(f'{exit_}\n')
-                tempdhcp_snooping.write(f'{configp}\n')
-                tempdhcp_snooping.write(f'{snooping_switch}\n')
-                tempdhcp_snooping.write(f'{waiti}\n')
-                tempdhcp_snooping.write(f'{snooping_limit}\n')
-                tempdhcp_snooping.write(f'{waiti}\n')
-                tempdhcp_snooping.write(f'{exit_}\n')
-                tempdhcp_snooping.write(f'{configp}\n')
-                tempdhcp_snooping.write(f'{snooping_vlans}\n')
-                tempdhcp_snooping.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            enable_snooping,
+                            configp,
+                            snooping_router,
+                            waiti,
+                            router_trust,
+                            waiti,
+                            exit_,
+                            configp,
+                            snooping_switch,
+                            waiti,
+                            snooping_limit,
+                            waiti,
+                            exit_,
+                            configp,
+                            snooping_vlans,
+                            configp,
+                            ]
+                tempdhcp_snooping.writelines(f'{commands}\n'\
+                for com in commands)
                 tempdhcp_snooping.flush()
-                tempdhcp_snooping.close()
                 print('dhcp-snooping done!')
                 input('press enter to continue: ')
                 continue
         
         elif arp_or_dhcp == 'arp-inspection':
-            vlans = input('enter vlans for arp inspection seperated by (,): ')
+            vlans = input('enter vlans for arp inspection separated by (,): ')
             ports_trusted = input('enter trusted ports for arp inspection: ')
             enable_arp = f"sendln 'ip arp inspection vlan {vlans}'"
             enable_trust = f"sendln'ip arp inspection trust'"
             with open('tempstart.ttl', 'at') as temparp_inspection:
-                temparp_inspection.write(f'{configp}\n')
-                temparp_inspection.write(f'{enable_arp}\n')
-                temparp_inspection.write(f'{configp}\n')
+                commands = [
+                            configp,
+                            enable_arp,
+                            configp,
+                            enable_trust,
+                            configp
+                            ]
+                temparp_inspection.writelines(f'{commands}\n'\
+                for com in commands)
                 temparp_inspection.flush()
-                temparp_inspection.close()
                 print('arp-inspection done')
                 input('press enter to continue: ')
                 continue
@@ -563,27 +637,30 @@ def stp_(hostname):
     waiti = f"waitln '{hostname}(config-if-range)#'"
     configp = f"waitln '{hostname}(config)#'"
     port_mode = f"sendln 'spanning-tree mode {mode}'"
-    port_ports = f"sendln 'int range {ports}'"
+    port_ports = f"sendln 'int range G{ports}'"
     configt = "sendln 'configure terminal'"
     end = "sendln 'end'"
     portfast = "sendln 'spanning-tree portfast'"
     bpduguard = "sendln 'spanning-tree bpduguard enable'"
     with open('tempstart.ttl', 'at') as tempstp:
-        tempstp.write(f'{configp}\n')
-        tempstp.write(f'{port_mode}\n')
-        tempstp.write(f'{configp}\n')
-        tempstp.write(f'{port_ports}\n')
-        tempstp.write(f'{waiti}\n')
-        tempstp.write(f'{portfast}\n')
-        tempstp.write(f'{waiti}\n')
-        tempstp.write(f'{bpduguard}\n')
-        tempstp.write(f'{waiti}\n')
-        tempstp.write(f'{end}\n')
-        tempstp.write(f'{waite}\n')
-        tempstp.write(f'{configt}\n')
-        tempstp.write(f'{configp}\n')
+        commands = [
+                    configp,
+                    port_mode,
+                    configp,
+                    port_ports,
+                    waiti,
+                    portfast,
+                    waiti,
+                    bpduguard,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempstp.writelines(f'{commands}\n'\
+        for com in commands)
         tempstp.flush()
-        tempstp.close()
         print('stp done!')
         input('press enter to continue: ')
         return ports
@@ -599,31 +676,40 @@ def start_(hostname):
     enable = "sendln 'enable'"
     configt = "sendln 'configure terminal'"
     configp = f"waitln 'Switch(config)#'"
-    configp_w_host = f"waitln '{hostname}(config)#"
+    configp_w_host = f"waitln '{hostname}(config)#'"
     hostname_command = f"sendln 'hostname {hostname}'"
     with open('tempstart.ttl', 'w+') as tempstart:
-        tempstart.write(f'{setsync}\n')
-        tempstart.write(f'{connect}\n')
-        tempstart.write(f'{wait}\n')
-        tempstart.write(f'{enable}\n')
-        tempstart.write(f'{waite}\n')
-        tempstart.write(f'{configt}\n')
-        tempstart.write(f'{configp}\n')
-        tempstart.write(f'{hostname_command}\n')
-        tempstart.write(f'{configp_w_host}\n')
-        tempstart.write(f'{passw_secret}\n')
-        tempstart.write(f'{configp_w_host}\n')
-        tempstart.write(f'{login}\n')
-        tempstart.write(f'{configp_w_host}\n')
+        commands = [
+                    setsync,
+                    connect,
+                    wait,
+                    enable,
+                    waite,
+                    configt,
+                    configp,
+                    hostname_command,
+                    configp_w_host,
+                    passw_secret,
+                    configp_w_host,
+                    login,
+                    configp_w_host,
+                    ]
+        tempstart.writelines(f'{commands}\n'\
+        for com in commands)
         tempstart.flush()
-        tempstart.close()
+        try:
+            os.remove('tempstart.ttl')
+        
+        except FileNotFoundError:
+            pass
+        
         print('initialization done!')
         input('press enter to continue: ')
         return 
 
 def finish_(hostname):
     name_of_file = input('enter name for log file without .log: ')
-    Desktop = Path.home() / "Desktop"
+    Desktop = Path.home() / "OneDrive" / "Desktop"
     log_file = Desktop / f"{name_of_file}.log"
     start_logging = f"logopen '{str(log_file)}'"
     stop_logging = "logclose"
@@ -634,18 +720,21 @@ def finish_(hostname):
     terminal_length = "sendln 'terminal length 0'"
     carriage_return = "sendln ''"
     with open('tempfinish.ttl', 'w+') as tempfinish:
-        tempfinish.write(f'{terminal_length}\n')
-        tempfinish.write(f'{configp}\n')
-        tempfinish.write(f'{save}\n')
-        tempfinish.write(f'{save_prompt}\n')    
-        tempfinish.write(f'{carriage_return}\n')
-        tempfinish.write(f'{configp}\n')
-        tempfinish.write(f'{start_logging}\n')
-        tempfinish.write(f'{show}\n')
-        tempfinish.write(f'{configp}\n')
-        tempfinish.write(f'{stop_logging}\n')
+        commands = [
+                    terminal_length,
+                    configp,
+                    save,
+                    save_prompt,    
+                    carriage_return,
+                    configp,
+                    start_logging,
+                    show,
+                    configp,
+                    stop_logging,
+                    ]
+        tempfinish.writelines(f'{commands}\n'\
+        for com in commands)
         tempfinish.flush()
-        tempfinish.close()
         print('finish macro done!')
         input('press enter to continue: ')
         return
@@ -677,36 +766,46 @@ def delete_save(hostname):
     reload_confirm = "waitln 'Would you like to save the current configuration? [yes/no]:'"
     reload_confirm_no = "sendln 'no'"
     with open('tempdelete.ttl', 'w+') as tempdelete:
-        tempdelete.write(f'{setsync}\n')
-        tempdelete.write(f'{connect}\n')
-        tempdelete.write(f'{starting_prompt}\n')
-        tempdelete.write(f'{carriage_return}\n')
-        tempdelete.write(f'{waitp}\n')
-        tempdelete.write(f'{passw_c}\n')
-        tempdelete.write(f'{wait}\n')
-        tempdelete.write(f'{enable}\n')
-        tempdelete.write(f'{waitp}\n')
-        tempdelete.write(f'{passw_e}\n')
-        tempdelete.write(f'{waite}\n')
-        tempdelete.write(f'{configt}\n')
-        tempdelete.write(f'{configp}\n')
-        tempdelete.write(f'{delete_startup}\n')
-        tempdelete.write(f'{delet_startup_prompt}\n')      
-        tempdelete.write(f'{carriage_return}\n')
-        tempdelete.write(f'{configp}\n')
-        tempdelete.write(f'{delete_vlan_dat}\n')
-        tempdelete.write(f'{vlan_dat_delete_prompt}\n')
-        tempdelete.write(f'{carriage_return}\n')
-        tempdelete.write(f'{vlan_dat_delete_prompt_confirm}\n')
-        tempdelete.write(f'{carriage_return}\n')        
-        tempdelete.write(f'{configp}\n')
-        tempdelete.write(f'{reload}\n')
-        tempdelete.write(f'{reload_prompt}\n')
-        tempdelete.write(f'{carriage_return}\n')
-        tempdelete.write(f'{reload_confirm}\n')
-        tempdelete.write(f'{reload_confirm_no}\n')
+        commands = [
+                    setsync,
+                    connect,
+                    starting_prompt,
+                    carriage_return,
+                    waitp,
+                    passw_c,
+                    wait,
+                    enable,
+                    waitp,
+                    passw_e,
+                    waite,
+                    configt,
+                    configp,
+                    delete_startup,
+                    delet_startup_prompt,      
+                    carriage_return,
+                    configp,
+                    delete_vlan_dat,
+                    vlan_dat_delete_prompt,
+                    carriage_return,
+                    vlan_dat_delete_prompt_confirm,
+                    carriage_return,        
+                    configp,
+                    reload,
+                    reload_prompt,
+                    carriage_return,
+                    reload_confirm,
+                    reload_confirm_no,
+                    ]
+        tempdelete.writelines(f'{commands}\n'\
+        for com in commands)
         tempdelete.flush()
-        tempdelete.close()
+        try:
+            os.remove('tempstart.ttl')
+            os.remove('tempfinish.ttl')
+        
+        except FileNotFoundError:
+            pass
+       
         print('delete macro done!')
         input('press enter to continue: ')
         return 
@@ -718,7 +817,7 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
     print(f'stp enabled ports: {port_result3}')
     blackhole = input('please enter Parking or Blackhole vlan: ')
     park_ports = input('enter ports for Parking_Lot: ')
-    port_ports = f"sendln 'int range {park_ports}'"
+    port_ports = f"sendln 'int range G{park_ports}'"
     access = "sendln 'switchport mode access'"
     access_vlan = f"sendln 'switchport access vlan {blackhole}'"
     end = "sendln 'end'"
@@ -727,29 +826,39 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
     configp = f"waitln '{hostname}(config)#'"
     configt = "sendln 'configure terminal'"
     with open('tempstart.ttl', 'at') as tempBlackhole_ParkingLot:
-        tempBlackhole_ParkingLot.write(f'{configp}\n')
-        tempBlackhole_ParkingLot.write(f'{port_ports}\n')
-        tempBlackhole_ParkingLot.write(f'{waiti}\n')
-        tempBlackhole_ParkingLot.write(f'{access}\n')
-        tempBlackhole_ParkingLot.write(f'{waiti}\n')
-        tempBlackhole_ParkingLot.write(f'{access_vlan}\n')
-        tempBlackhole_ParkingLot.write(f'{waiti}\n')
-        tempBlackhole_ParkingLot.write(f'{end}\n')
-        tempBlackhole_ParkingLot.write(f'{waite}\n')
-        tempBlackhole_ParkingLot.write(f'{configt}\n')
-        tempBlackhole_ParkingLot.write(f'{configp}\n')
+        commands = [ 
+                    configp,
+                    port_ports,
+                    waiti,
+                    access,
+                    waiti,
+                    access_vlan,
+                    waiti,
+                    end,
+                    waite,
+                    configt,
+                    configp,
+                    ]
+        tempBlackhole_ParkingLot.writelines(f'{commands}\n'\
+        for com in commands)
         tempBlackhole_ParkingLot.flush()
-        tempBlackhole_ParkingLot.close()
         print('parking lot done!')
         input('press enter to continue: ')
         return park_ports
 
-
+def show_ports(port_result1='None', port_result2='None', port_result3='None', Blackhole_ports='None', hostname='None'):
+        print(f'vlan ports: {port_result1}')
+        print(f'etherchannel & trunking ports: {port_result2}')
+        print(f'stp enabled ports: {port_result3}')
+        print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
+        print(f'hostname: {hostname}')
+        input('press ENTER to continue...')
+        return
+    
 
 def clear_screen():
     os.system('cls')
     return
-
 
 
 def filecheck():
@@ -768,7 +877,7 @@ while loop, checking value of 'menu_Input' if value is on list then continue the
 each 'elif' is checking for specific input value to call respective functions
 includes an exit and "mysterious values" or "unknown" check at the bottom of the loop 
 '''
-print('use start. to initialize Macro file.')
+print('use \'start\'. to initialize Macro file.')
 print('if file already exists, do not use start. and it will add to the file with a correct hostname.')
 print('finish and delete are seperate files, and can be chosen after macro is set.')
 pause = input('press return: ')
@@ -776,185 +885,82 @@ clear_screen()
 hostname = input('enter machines hostname: ')
 program_running = True
 while program_running is True:    
-    tempstart = filecheck()
+    tempstart_file = filecheck()
     clear_screen()
     menu_input = menu()
-    while menu_input == '1':
-        try:
-            os.remove('tempdelete.ttl')
-            start_(hostname)
-
-        except FileNotFoundError:
-            start_(hostname)
-
-        finally:
-            break 
+    if menu_input == '1':
+        start_(hostname)
     
-    while menu_input == '2':
-        if tempstart == 'y':
+    if menu_input == '2':
+        if tempstart_file == 'y':
             clock(hostname)
-            break
-        
-        else:
-            break
-            
-    while menu_input == '3':
-        if tempstart == 'y':
+                
+    if menu_input == '3':
+        if tempstart_file == 'y':
             line_con(hostname)
-            break
-        
-        else:
-            break
-
-    while menu_input == '4':
-        if tempstart == 'y':
+               
+    if menu_input == '4':
+        if tempstart_file == 'y':
             vty_line(hostname)
-            break
         
-        else:
-            break
-
-    while menu_input == '5':
-        if tempstart == 'y':
+    if menu_input == '5':
+        if tempstart_file == 'y':
             c_vlans(hostname)   
-            break
         
-        else:
-            break
-
-    while menu_input == '6':
-        if tempstart == 'y':
+    if menu_input == '6':
+        if tempstart_file == 'y':
             port_result1 = a_vlans(hostname)
-            break
-        
-        else:
-            break
 
-    while menu_input == '7':
-        if tempstart == 'y':
+    if menu_input == '7':
+        if tempstart_file == 'y':
             vlan_ip(hostname)
-            break
-        
-        else:
-            break
 
-    while menu_input == '8':
-        if tempstart == 'y':
+    if menu_input == '8':
+        if tempstart_file == 'y':
             ip_gateway(hostname)
-            break
-        
-        else:
-            break
 
-    while menu_input == '9':
-        if tempstart == 'y':
+    if menu_input == '9':
+        if tempstart_file == 'y':
             port_result2 = trunking_m(hostname)
-            break
 
-        else:
-            break
-
-    while menu_input == '10':
-        if tempstart == 'y':
-            port_result2 = etherchannel(hostname)
-            break
+    if menu_input == '10':
+        if tempstart_file == 'y':
+            port_result2 = etherchannel(hostname)        
         
-        else:
-            break
-
-    while menu_input == '11':
-        if tempstart == 'y':
+    if menu_input == '11':
+        if tempstart_file == 'y':
             port_result3 = stp_(hostname)
-            break
         
-        else:
-            break
-
-    while menu_input == '12':
-        if tempstart == 'y':
+    if menu_input == '12':
+        if tempstart_file == 'y':
             Blackhole_ports = ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3)
-            break
         
-        else:
-            break
-
-    while menu_input == '13':
-        if tempstart == 'y':
+    if menu_input == '13':
+        if tempstart_file == 'y':
             port_sec(hostname)
-            break
         
-        else:
-            break
-
-    while menu_input == '14':
-        if tempstart == 'y':
+    if menu_input == '14':
+        if tempstart_file == 'y':
             mitigate_dhcp_attacks_and_arp(hostname)
-            break
+       
+    if menu_input == '15':
+        show_ports(port_result1, port_result2, port_result3, Blackhole_ports, hostname)
 
-        else:
-            break
-
-    while menu_input == '15':
-        try:
-            print(f'vlan ports: {port_result1}')
-        
-        except NameError:
-            print(f'vlan ports: None')    
-            
-        try:            
-            print(f'etherchannel & trunking ports: {port_result2}')
-        
-        except NameError:
-            print(f'etherchannel & trunking ports: None')
-
-        try:    
-            print(f'stp enabled ports: {port_result3}')
-        
-        except NameError:
-            print(f'stp enabled ports: None')
-
-        try:
-            print(f'Parking_Lot or Blackhole ports: {Blackhole_ports}')
-
-        except NameError:
-            print(f'Parking_Lot or Blackhole ports: None')
-                  
-        try:
-            print(f'hostname: {hostname}')
-            
-        except NameError:
-            print(f'hostname: None')
-        
-        finally:
-            pause = input('press ENTER to continue...')
-            break
-        
-    while menu_input == '16':
+    if menu_input == '16':
         finish_(hostname)
-        break
-        
-    while menu_input == '17':
-        try:
-            os.remove('tempstart.ttl')
-            os.remove('tempfinish.ttl')
-            delete_save(hostname)
-            
-        except FileNotFoundError:
-            delete_save(hostname)    
 
-        finally:
-            break    
+    if menu_input == '17':
+        delete_save(hostname)           
     
     if menu_input == 'EXIT' or menu_input == 'exit':
         print("Goodbye!!!?")
         break
-        
-    else:
-        continue                
+    
+    continue                
                         
 '''
 switch config script generator
-by: @ILICKTOES 
+by: @ILICKTOES
 version: 3.5f
 This script generates a .ttl file to be used with Tera Term to automate the configuration of Cisco switches.
 Usage: Run the script and follow the prompts to input configuration details. Select the desired configuration options from the menu.
