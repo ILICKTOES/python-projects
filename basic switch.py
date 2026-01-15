@@ -7,8 +7,10 @@ CTN - computer technician script
 '''
 from datetime import datetime as dt
 from pathlib import Path
-import os
+import os.path as file
 import calendar as cal
+import os
+
 
 def menu():
     print("-Macro-Maker-----------\n")
@@ -862,15 +864,13 @@ def clear_screen():
 
 
 def filecheck():
-    try:
-        with open('tempstart.ttl') as check:
-            check.close()
+    if file.exists('tempstart.ttl'):
             return 'y'
     
-    except FileNotFoundError:
+    else:
         print('tempstart not found')
         input('press enter to continue:')
-        return 
+        return 'n'
 
 '''
 while loop, checking value of 'menu_Input' if value is on list then continue the loop
