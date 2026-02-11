@@ -12,57 +12,28 @@ import calendar as cal
 import os
 
 
-def menu():
-    print("-Macro-Maker-----------\n")
-    print("1."+"Hostname & EXEC password\n")
-    print("2."+"Set clock\n")
-    print("3."+"Console line config\n")
-    print("4."+"VTY line config\n")
-    print("5."+"Create vlans\n")
-    print("6."+"Assign ports to vlans\n")
-    print("7."+"Add ip to vlans\n")
-    print("8."+"Default gateway\n")
-    print("9."+"Manual trunking\n")
-    print("10."+"Etherchannel & Trunking\n")
-    print("11."+"STP & PVST config\n")
-    print("12."+"Parking_Lot & Blackhole vlan\n")
-    print("13."+"port security & Violation\n")
-    print("14."+"dhcp snooping & arp inspection\n")
-    print("15."+"show configured ports\n")
-    print("16."+"finish & save config\n")
-    print("17."+"delete startup-config & reload\n")
-    print("Type EXIT to quit\n")
-    print("-----------------------\n")
-    return input('select option: ')
-
 def clock(hostname):
-    class time_now():
-        def __init__(self):
-            self.time = str(dt().time()).replace('.', ':').replace(' ', ':').split(':')
+    class Once:
+        time = str(dt().time()).replace('.', ':').replace(' ', ':').split(':')
 
-        def hr(self):
-            return str(self.time[1])
+        hr = time[1]
 
-        def yr(self):
-            return str(self.time[0].split('-')[0])
+        yr = time[0].split('-')[0]
 
-        def mn(self):
-            return str(cal.month_name(int(self.time[0].split('-')[1])))
+        mn = cal.month_name(int(time[0].split('-')[1]))
             
-        def min(self):
-            return str(self.time[2])
+        min = time[2]
         
-        def dy(self):
-            return str(self.time[0].split('-')[2])
+        dy = time[0].split('-')[2]
         
-    print(f'Setting clock to {time_now().hr()}:{time_now().min()}:00 {time_now().dy()} {time_now().mn()} {time_now().yr()}\n')
+    print(f'Setting clock to {Once.hr()}:{Once.min()}:00 {Once.dy()} {Once.mn()} {Once.yr()}')
     configp = f"waitln '{hostname}(config)#'"
-    clock_complete = f"sendln 'do clock set {time_now().hr()}:{time_now().min()}:00 {time_now().dy()} {time_now().mn()} {time_now().yr()}'"  
+    clock_complete = f"sendln 'do clock set {Once.hr()}:{Once.min()}:00 {Once.dy()} {Once.mn()} {Once.yr()}'"  
     with open('tempstart.ttl', 'at') as tempclock:
         commands = [
                     configp,
                     clock_complete,
-                    configp,
+                    configp
                     ]
         tempclock.writelines(f'{commands}\n'\
         for com in commands)
@@ -96,7 +67,7 @@ def line_con(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempvty_password.writelines(f'{commands}\n'\
         for com in commands)
@@ -130,7 +101,7 @@ def vty_line(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempvty_password.writelines(f'{commands}\n'\
         for com in commands)
@@ -162,7 +133,7 @@ def a_vlans(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempassign_ports_vlan.writelines(f'{commands}\n'\
         for com in commands)
@@ -191,7 +162,7 @@ def c_vlans(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempcreate_vlan.writelines(f'{commands}\n'\
         for com in commands)
@@ -215,7 +186,7 @@ def ip_gateway(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempdefault_gateway.writelines(f'{commands}\n'\
         for com in commands)
@@ -248,7 +219,7 @@ def vlan_ip(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempvlan_ip.writelines(f'{commands}\n'\
         for com in commands)
@@ -287,7 +258,7 @@ def trunking_m(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempmanual_trunking.writelines(f'{commands}\n'\
         for com in commands)
@@ -342,7 +313,7 @@ def etherchannel(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempetherchannel.writelines(f'{commmands}\n'\
         for com in commmands)
@@ -386,7 +357,7 @@ def port_sec(hostname):
                             end,
                             waite,
                             configt,
-                            configp,
+                            configp
                             ]
                 tempmanual.writelines(f'{commands}\n'\
                 for com in commands)
@@ -419,7 +390,7 @@ def port_sec(hostname):
                             end,
                             waite,
                             configt,
-                            configp,
+                            configp
                             ]
                 tempsticky.writelines(f'{commands}\n'\
                 for com in commands)
@@ -449,7 +420,7 @@ def port_sec(hostname):
                             end,
                             waite,
                             configt,
-                            configp,
+                            configp
                             ]
                 tempdynamic.writelines(f'{commands}\n'\
                 for com in commands)
@@ -472,7 +443,7 @@ def port_sec(hostname):
                             end,
                             waite,
                             configt,
-                            configp,
+                            configp
                             ]                                      
                 tempshutdown.writelines(f'{commands}\n'\
                 for com in commands)
@@ -499,7 +470,7 @@ def port_sec(hostname):
                                 end,
                                 waite,
                                 configt,
-                                configp,
+                                configp
                                 ]
                     temptime.writelines(f'{commands}\n'\
                     for com in commands)
@@ -513,7 +484,7 @@ def port_sec(hostname):
                                 end,
                                 waite,
                                 configt,
-                                configp,
+                                configp
                                 ]
                     temptime.writelines(f'{commands}\n'\
                     for com in commands)
@@ -532,7 +503,7 @@ def port_sec(hostname):
                                 port_ports,
                                 wait,
                                 port_aging,
-                                wait,
+                                wait
                                 ]
                     violation_mode = input('enter violation mode > protect,restrict,shutdown: ')
                     port_violation = f"sendln 'switchport port-security violation {violation_mode}'"
@@ -543,7 +514,7 @@ def port_sec(hostname):
                                 end,
                                 wait,
                                 configt,
-                                wait,
+                                wait
                                 ]
                     tempstatic.writelines(f'{commands}\n'\
                     for com in commands)
@@ -595,7 +566,7 @@ def mitigate_dhcp_attacks_and_arp(hostname):
                             exit_,
                             configp,
                             snooping_vlans,
-                            configp,
+                            configp
                             ]
                 tempdhcp_snooping.writelines(f'{commands}\n'\
                 for com in commands)
@@ -658,7 +629,7 @@ def stp_(hostname):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempstp.writelines(f'{commands}\n'\
         for com in commands)
@@ -694,7 +665,7 @@ def start_(hostname):
                     passw_secret,
                     configp_w_host,
                     login,
-                    configp_w_host,
+                    configp_w_host
                     ]
         tempstart.writelines(f'{commands}\n'\
         for com in commands)
@@ -732,7 +703,7 @@ def finish_(hostname):
                     start_logging,
                     show,
                     configp,
-                    stop_logging,
+                    stop_logging
                     ]
         tempfinish.writelines(f'{commands}\n'\
         for com in commands)
@@ -796,7 +767,7 @@ def delete_save(hostname):
                     reload_prompt,
                     carriage_return,
                     reload_confirm,
-                    reload_confirm_no,
+                    reload_confirm_no
                     ]
         tempdelete.writelines(f'{commands}\n'\
         for com in commands)
@@ -839,7 +810,7 @@ def ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3):
                     end,
                     waite,
                     configt,
-                    configp,
+                    configp
                     ]
         tempBlackhole_ParkingLot.writelines(f'{commands}\n'\
         for com in commands)
@@ -863,14 +834,37 @@ def clear_screen():
     return
 
 
-def filecheck():
+def filecheck(function=None):
     if file.exists('tempstart.ttl'):
+            function()
             return 'y'
-    
     else:
         print('tempstart not found')
         input('press enter to continue:')
         return 'n'
+
+def menu():
+    print("-Macro-Maker-----------\n")
+    print("1."+"Hostname & EXEC password\n")
+    print("2."+"Set clock\n")
+    print("3."+"Console line config\n")
+    print("4."+"VTY line config\n")
+    print("5."+"Create vlans\n")
+    print("6."+"Assign ports to vlans\n")
+    print("7."+"Add ip to vlans\n")
+    print("8."+"Default gateway\n")
+    print("9."+"Manual trunking\n")
+    print("10."+"Etherchannel & Trunking\n")
+    print("11."+"STP & PVST config\n")
+    print("12."+"Parking_Lot & Blackhole vlan\n")
+    print("13."+"port security & Violation\n")
+    print("14."+"dhcp snooping & arp inspection\n")
+    print("15."+"show configured ports\n")
+    print("16."+"finish & save config\n")
+    print("17."+"delete startup-config & reload\n")
+    print("Type EXIT to quit\n")
+    print("-----------------------\n")
+    return input('select option: ')
 
 '''
 while loop, checking value of 'menu_Input' if value is on list then continue the loop
@@ -883,81 +877,50 @@ print('finish and delete are seperate files, and can be chosen after macro is se
 pause = input('press return: ')
 clear_screen()
 hostname = input('enter machines hostname: ')
-program_running = True
-while program_running is True:    
-    tempstart_file = filecheck()
-    clear_screen()
+options = {
+        '1': lambda: start_(hostname),
+        '2': lambda: clock(hostname),
+        '3': lambda: line_con(hostname),
+        '4': lambda: vty_line(hostname),
+        '5': lambda: c_vlans(hostname),
+        '6': lambda: a_vlans(hostname),
+        '7': lambda: vlan_ip(hostname), 
+        '8': lambda: ip_gateway(hostname),
+        '9': lambda: trunking_m(hostname),
+        '10': lambda: etherchannel(hostname),
+        '11': lambda: stp_(hostname),
+        '12': None,
+        '13': lambda: port_sec(hostname),
+        '14': lambda: mitigate_dhcp_attacks_and_arp(hostname),
+        '15': lambda: finish_(hostname),
+        '16': lambda: delete_save(hostname),
+        'EXIT': lambda: print('Goodbye!!!')
+    }
+
+while options:    
+    clear_screen()  
     menu_input = menu()
-    if menu_input == '1':
-        start_(hostname)
-    
-    if menu_input == '2':
-        if tempstart_file == 'y':
-            clock(hostname)
-                
-    if menu_input == '3':
-        if tempstart_file == 'y':
-            line_con(hostname)
-               
-    if menu_input == '4':
-        if tempstart_file == 'y':
-            vty_line(hostname)
-        
-    if menu_input == '5':
-        if tempstart_file == 'y':
-            c_vlans(hostname)   
-        
-    if menu_input == '6':
-        if tempstart_file == 'y':
-            port_result1 = a_vlans(hostname)
-
-    if menu_input == '7':
-        if tempstart_file == 'y':
-            vlan_ip(hostname)
-
-    if menu_input == '8':
-        if tempstart_file == 'y':
-            ip_gateway(hostname)
-
-    if menu_input == '9':
-        if tempstart_file == 'y':
-            port_result2 = trunking_m(hostname)
-
-    if menu_input == '10':
-        if tempstart_file == 'y':
-            port_result2 = etherchannel(hostname)        
-        
-    if menu_input == '11':
-        if tempstart_file == 'y':
-            port_result3 = stp_(hostname)
-        
-    if menu_input == '12':
-        if tempstart_file == 'y':
-            Blackhole_ports = ParkingLot_Blackhole(hostname, port_result1, port_result2, port_result3)
-        
-    if menu_input == '13':
-        if tempstart_file == 'y':
-            port_sec(hostname)
-        
-    if menu_input == '14':
-        if tempstart_file == 'y':
-            mitigate_dhcp_attacks_and_arp(hostname)
-       
-    if menu_input == '15':
-        show_ports(port_result1, port_result2, port_result3, Blackhole_ports, hostname)
-
-    if menu_input == '16':
-        finish_(hostname)
-
-    if menu_input == '17':
-        delete_save(hostname)           
-    
-    if menu_input == 'EXIT' or menu_input == 'exit':
-        print("Goodbye!!!?")
+    selection_ports = options[menu_input]()
+    if menu_input is '6':
+        port_result1 = selection_ports 
+    if menu_input is '9':
+        port_result2 = selection_ports
+    if menu_input is '10':
+        port_result3 = selection_ports
+    if menu_input is '11':
+        port_result4 = selection_ports
+    if menu_input is '12':
+        port_result3 = list(set(((port_result3 + ',') + port_result4).split(',')))
+        ParkingLot_Blackhole(
+            hostname,
+            port_result1,
+            port_result2,
+            port_result3
+            )
+    if menu_input is 'EXIT':
         break
-    
-    continue                
-                        
+    continue
+                     
 '''
 switch config script generator
 by: @ILICKTOES
