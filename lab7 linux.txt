@@ -13,8 +13,10 @@ for parameter in "${args[@]}"; do
 	if [ -n "${args[3]}" ] || [[ ! "${args[2]}" =~ ^[NnYy]$ ]]; then
 		echo "too many parameters 3 req. username, fullname,  admin=(\"Y\")es or (\"N\")o"
 		exit 1
+	elif [[ ! "${args[2]}" =~ ^[NnYy]$ ]]; then
+		args[2]="N"
 	fi
-	case $parameter in;
+	case $parameter in
 		"")				# if missing parameter exit code 1
 			echo "missing parameter(s) 3 req. username, fullname, admin=(\"Y\")es or (\"N\")o"		 
 		 	exit 1 
@@ -34,5 +36,5 @@ for parameter in "${args[@]}"; do
 			fi
 			;;
 	esac	
-	((count++))
+	((position++))
 done	
