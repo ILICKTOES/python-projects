@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Jacob, Lee Genereaux
+# FOLID: j_genereaux
+# STUDENT#: 1298774
+# INFO-3182
+
+
+#searches through all parameters for keywords/wildcards
+position=1
+args=("$@")
+for parameter in "${args[@]}"; do
+	if [ -n "${args[3]}" ] || [[ ! "${args[2]}" =~ ^[NnYy]$ ]]; then
+		echo "too many parameters 3 req. username, fullname,  admin=(\"Y\")es or (\"N\")o"
+		exit 1
+	fi
+	case $parameter in;
+		"")				# if missing parameter exit code 1
+			echo "missing parameter(s) 3 req. username, fullname, admin=(\"Y\")es or (\"N\")o"		 
+		 	exit 1 
+		 	;;
+		[Nn]) 				# check if to add wheel priv if not create standard user
+			if [ $position -eq 3 ]; then
+				sudo useradd -m -c "\"${args[1]}\"" -s /bin/bash "${args[0]}"
+				echo "User created"
+				exit 0
+			fi
+			;;
+		[Yy])				# otherwise create priv user
+			if [ $position -eq 3 ]; then
+				sudo useradd -G wheel -m -c "\"${args[1]}\"" -s /bin/bash "${args[0]}"
+				echo "User created with admin privilages"
+				exit 0
+			fi
+			;;
+	esac	
+	((count++))
+done	
