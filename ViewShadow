@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Jacob, Lee Genereaux
+# FOLID: j_genereaux
+# STDUENT#: 1298774
+# INFO-3182
+#creates variables for each field then prints
+sudo cat /etc/shadow | while IFS=':' read -r username password lastchg minimum maximum warn inactive expire reserved; do
+	echo -e "-\nUsername: $username "
+	echo "password: $password "
+	echo "last change: $lastchg "
+	echo "minimum days: $minimum "
+	echo "maximum days: $maximum "
+	echo "Warning days: $warn "
+	echo "inactive days: $inactive "
+	echo "Expires: $expire "
+	echo "reserved?: $reserved "
+
+done
